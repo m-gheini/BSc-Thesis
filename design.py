@@ -6,6 +6,7 @@ SYMBOL_MORE = '+'
 SYMBOL_LESS = 'ـ'
 HEADER_FONT = ("Titr", 20)
 SECTION_NAME_FONT = ("B Nazanin", 16)
+BUTTON_FONT = ("B Nazanin", 12)
 SEC1_KEY = '-SECTION1-'
 SEC2_KEY = '-SECTION2-'
 
@@ -21,28 +22,50 @@ def createCollapsible(layout, key, title='', arrow=(SYMBOL_LESS, SYMBOL_MORE), c
     return sg.Column([sectionName, sectionContent], pad=(0, 0), element_justification='r', expand_x=True)
 
 
+def createUploadPlacement():
+    uploadIcon = [sg.Image("Assets/uploadIcon.png", pad=((105, 0), (30, 100)))]
+
+    uploadButton = [sg.Button(" آپلود داده ", font=BUTTON_FONT, pad=((105, 0), (30, 0)))]
+
+    defaultFileButton = [sg.Button(" استفاده از داده پیش فرض ", font=BUTTON_FONT, pad=((105, 0), (30, 0)))]
+
+    uploadFrameContentLayout = [uploadIcon, uploadButton, defaultFileButton]
+
+    uploadFrameContent = [
+        sg.Column(uploadFrameContentLayout, size=(360, 400), element_justification='c', justification='center')]
+
+    uploadFrame = [sg.Frame('', [uploadFrameContent], element_justification='c', expand_x=True)]
+
+    uploadPlace = sg.Column([uploadFrame], pad=(0, 0), expand_x=True)
+    return uploadPlace
+
+
+def createMoreOptionForDataPlace():
+    option1 = sg.Checkbox("", pad=((10, 0), (0, 0)))
+
+    option1Text = sg.Text("ادغام تقاضای نهایی مربوط به چین", justification='r', font=BUTTON_FONT,
+                          enable_events=True, expand_x=True, pad=((140, 0), (0, 0)))
+
+    option2 = sg.Checkbox("", pad=((10, 0), (0, 0)))
+
+    option2Text = sg.Text("ادغام تقاضای نهایی مربوط به مکزیک", justification='r', font=BUTTON_FONT,
+                          enable_events=True, expand_x=True, pad=((140, 0), (0, 0)))
+
+    moreOptionFrameContentLayout = [[option1Text, option1], [option2Text, option2]]
+
+    moreOptionFrameContent = [
+        sg.Column(moreOptionFrameContentLayout, size=(360, 400), element_justification='r', justification='right')]
+
+    moreOptionFrame = [sg.Frame('', [moreOptionFrameContent], element_justification='r', expand_x=True)]
+
+    moreOptionPlace = sg.Column([moreOptionFrame], pad=(0, 0), expand_x=True)
+    return moreOptionPlace
+
+
 def createDataLayout():
-    uploadFrameContentLayout = [
-        sg.Listbox(['Account ' + str(i) for i in range(1, 25)], key='-ACCT-LIST-', size=(15, 20))]
-
-    uploadFrameContent = [sg.Column([uploadFrameContentLayout], expand_x=True)]
-
-    uploadFrame = [sg.Frame('', [uploadFrameContent], element_justification='c')]
-
-    # uploadPlace = sg.Column([uploadFrame], pad=(0, 0), expand_x=True)
-
-    # More Options
-    # optionFrameContentLayout = [
-    #     sg.Listbox(['Account ' + str(i) for i in range(1, 25)], key='-AC-LIST-', size=(15, 20))]
-    #
-    # optionFrameContent = [sg.Column([optionFrameContentLayout], size=(365, 400))]
-    #
-    # optionFrame = [sg.Frame('', [optionFrameContent])]
-    #
-    # optionPlace = sg.Column([optionFrame], pad=(0, 0))
-
-    # return [uploadPlace]
-    return [sg.Column([uploadFrame], pad=(0, 0), expand_x=True)]
+    moreOptionForDataPlace = createMoreOptionForDataPlace()
+    uploadPlace = createUploadPlacement()
+    return [moreOptionForDataPlace, uploadPlace]
 
 
 dataSection = [createDataLayout()]
