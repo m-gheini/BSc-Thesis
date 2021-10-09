@@ -23,13 +23,20 @@ def createCollapsible(layout, key, title='', arrow=(SYMBOL_LESS, SYMBOL_MORE), c
 
 
 def createUploadPlacement():
+    # infoPlace = [sg.Text()]
+
     uploadIcon = [sg.Image("Assets/uploadIcon.png", pad=((105, 0), (30, 100)))]
 
-    uploadButton = [sg.Button(" آپلود داده ", font=BUTTON_FONT, pad=((105, 0), (30, 0)))]
+    fileNamePlacement = sg.In(size=(30, 100), enable_events=True, key="-FILE-", visible=False)
 
-    defaultFileButton = [sg.Button(" استفاده از داده پیش فرض ", font=BUTTON_FONT, pad=((105, 0), (30, 0)))]
+    uploadButton = sg.FileBrowse(" انتخاب و آپلود داده ", font=BUTTON_FONT, pad=((105, 0), (30, 0)),
+                                 file_types=(("CSV Files", "*.csv"), ("excel Files", "*.xlsx")), initial_folder="C:\\",
+                                 key="-CHOOSE-")
 
-    uploadFrameContentLayout = [uploadIcon, uploadButton, defaultFileButton]
+    defaultFileButton = [sg.Button(" استفاده از داده پیش فرض ", font=BUTTON_FONT, pad=((105, 0), (30, 0)),
+                                   key="-DEFAULT-")]
+
+    uploadFrameContentLayout = [uploadIcon, [fileNamePlacement, uploadButton], defaultFileButton]
 
     uploadFrameContent = [
         sg.Column(uploadFrameContentLayout, size=(360, 400), element_justification='c', justification='center')]
@@ -110,6 +117,12 @@ def main():
             window[SEC2_KEY].update(visible=not window[SEC2_KEY].visible)
             window[SEC2_KEY + '-BUTTON-'].update(
                 window[SEC2_KEY].metadata[0] if window[SEC2_KEY].visible else window[SEC2_KEY].metadata[1])
+
+        if event == "-FILE-":
+            file = values["-FILE-"]
+            window["-CHOOSE-"].update(visible=False)
+            window["-DEFAULT-"].update(visible=False)
+            print(file)
 
     window.close()
     exit(0)
