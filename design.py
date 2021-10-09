@@ -23,20 +23,27 @@ def createCollapsible(layout, key, title='', arrow=(SYMBOL_LESS, SYMBOL_MORE), c
 
 
 def createUploadPlacement():
-    # infoPlace = [sg.Text()]
+    uploadProgress = sg.ProgressBar(1000, orientation='h', size=(20, 20), key="-PROGRESS BAR-", visible=False,
+                                    pad=((65, 0), (20, 0)))
 
-    uploadIcon = [sg.Image("Assets/uploadIcon.png", pad=((105, 0), (30, 100)))]
+    completeMessage = sg.Text(key="-MESSAGE-", visible=False, pad=((65, 0), (0, 0)))
+
+    uploadIcon = [sg.Image("Assets/uploadIcon.png", pad=((105, 0), (20, 100)), key="-UPLOAD ICON-")]
 
     fileNamePlacement = sg.In(size=(30, 100), enable_events=True, key="-FILE-", visible=False)
 
-    uploadButton = sg.FileBrowse(" انتخاب و آپلود داده ", font=BUTTON_FONT, pad=((105, 0), (30, 0)),
+    uploadButton = sg.FileBrowse(" انتخاب و آپلود داده ", font=BUTTON_FONT, pad=((105, 0), (20, 0)),
                                  file_types=(("CSV Files", "*.csv"), ("excel Files", "*.xlsx")), initial_folder="C:\\",
                                  key="-CHOOSE-")
 
-    defaultFileButton = [sg.Button(" استفاده از داده پیش فرض ", font=BUTTON_FONT, pad=((105, 0), (30, 0)),
+    defaultFileButton = [sg.Button(" استفاده از داده پیش فرض ", font=BUTTON_FONT, pad=((105, 0), (20, 0)),
                                    key="-DEFAULT-")]
 
-    uploadFrameContentLayout = [uploadIcon, [fileNamePlacement, uploadButton], defaultFileButton]
+    changeButton = [sg.Button("تغییر فایل داده", font=BUTTON_FONT, pad=((65, 0), (0, 0)),
+                              key="-CHANGE-", visible=False)]
+
+    uploadFrameContentLayout = [[uploadProgress, completeMessage], uploadIcon, changeButton,
+                                [fileNamePlacement, uploadButton], defaultFileButton]
 
     uploadFrameContent = [
         sg.Column(uploadFrameContentLayout, size=(360, 400), element_justification='c', justification='center')]
@@ -101,6 +108,16 @@ def makeWindow(theme):
     return sg.Window('Shock Diffusion Tool', layout, resizable=True)
 
 
+def findFileName(path):
+    temp = 0
+    lastSlash = 0
+    while temp != -1:
+        lastSlash = temp
+        temp = path.find("/", temp + 1)
+    # dot = path.find(".")
+    return path[(lastSlash + 1):]
+
+
 def main():
     window = makeWindow(sg.theme())
     while True:
@@ -120,9 +137,36 @@ def main():
 
         if event == "-FILE-":
             file = values["-FILE-"]
+            window["-UPLOAD ICON-"].update(visible=False)
             window["-CHOOSE-"].update(visible=False)
             window["-DEFAULT-"].update(visible=False)
-            print(file)
+            window['-PROGRESS BAR-'].update(visible=True, current_count=0)
+            for i in range(1000):
+                window['-PROGRESS BAR-'].UpdateBar(i + 1)
+            window["-MESSAGE-"].update(visible=True)
+            window["-MESSAGE-"].update(findFileName(file))
+            window["-CHANGE-"].update(visible=True)
+
+        if event == "-CHANGE-":
+            window['-PROGRESS BAR-'].update(visible=False, current_count=0)
+            window["-MESSAGE-"].update("")
+            window["-MESSAGE-"].update(visible=False)
+            window["-CHANGE-"].update(visible=False)
+            window["-UPLOAD ICON-"].update(visible=True,)
+            window["-CHOOSE-"].update(visible=True)
+            window["-DEFAULT-"].update(visible=True)
+
+        if event == "-DEFAULT-":
+            file = "Assets/ICIO2018_2015.CSV"
+            window["-UPLOAD ICON-"].update(visible=False)
+            window["-CHOOSE-"].update(visible=False)
+            window["-DEFAULT-"].update(visible=False)
+            window['-PROGRESS BAR-'].update(visible=True, current_count=0)
+            for i in range(1000):
+                window['-PROGRESS BAR-'].UpdateBar(i + 1)
+            window["-MESSAGE-"].update(visible=True)
+            window["-MESSAGE-"].update(findFileName(file))
+            window["-CHANGE-"].update(visible=True)
 
     window.close()
     exit(0)
