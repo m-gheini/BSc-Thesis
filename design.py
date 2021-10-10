@@ -11,6 +11,7 @@ SEC1_KEY = '-SECTION1-'
 SEC2_KEY = '-SECTION2-'
 
 
+
 def createCollapsible(layout, key, title='', arrow=(SYMBOL_LESS, SYMBOL_MORE), collapsed=True):
     sectionName = [sg.T(title, enable_events=True, key=key + '-TITLE-', font=SECTION_NAME_FONT),
                    sg.T((arrow[1] if collapsed else arrow[0]), enable_events=True, k=key + '-BUTTON-',
@@ -81,6 +82,19 @@ def createDataLayout():
     uploadPlace = createUploadPlacement()
     return [moreOptionForDataPlace, uploadPlace]
 
+# def chooseImporterExporter():
+#     importerChoices =
+#
+# # def createShockDatePlace():
+#
+# # def createScenarioPlace():
+#
+# def createShockScenarioLayout():
+#     # importerExporterPlace = chooseImporterExporter()
+#     # shockDataPlace = createShockDatePlace()
+#     # scenarioPlace = createScenarioPlace()
+#     # return [importerExporterPlace, shockDataPlace, scenarioPlace]
+
 
 dataSection = [createDataLayout()]
 
@@ -120,7 +134,9 @@ def findFileName(path):
 
 def main():
     window = makeWindow(sg.theme())
+    DATA = ''
     while True:
+        print("DATA::", DATA)
         event, values = window.read(timeout=100)
         if event in (None, 'Exit'):
             break
@@ -136,7 +152,7 @@ def main():
                 window[SEC2_KEY].metadata[0] if window[SEC2_KEY].visible else window[SEC2_KEY].metadata[1])
 
         if event == "-FILE-":
-            file = values["-FILE-"]
+            DATA = values["-FILE-"]
             window["-UPLOAD ICON-"].update(visible=False)
             window["-CHOOSE-"].update(visible=False)
             window["-DEFAULT-"].update(visible=False)
@@ -144,10 +160,11 @@ def main():
             for i in range(1000):
                 window['-PROGRESS BAR-'].UpdateBar(i + 1)
             window["-MESSAGE-"].update(visible=True)
-            window["-MESSAGE-"].update(findFileName(file))
+            window["-MESSAGE-"].update(findFileName(DATA))
             window["-CHANGE-"].update(visible=True)
 
         if event == "-CHANGE-":
+            DATA = ''
             window['-PROGRESS BAR-'].update(visible=False, current_count=0)
             window["-MESSAGE-"].update("")
             window["-MESSAGE-"].update(visible=False)
@@ -157,7 +174,7 @@ def main():
             window["-DEFAULT-"].update(visible=True)
 
         if event == "-DEFAULT-":
-            file = "Assets/ICIO2018_2015.CSV"
+            DATA = "Assets/ICIO2018_2015.CSV"
             window["-UPLOAD ICON-"].update(visible=False)
             window["-CHOOSE-"].update(visible=False)
             window["-DEFAULT-"].update(visible=False)
@@ -165,7 +182,7 @@ def main():
             for i in range(1000):
                 window['-PROGRESS BAR-'].UpdateBar(i + 1)
             window["-MESSAGE-"].update(visible=True)
-            window["-MESSAGE-"].update(findFileName(file))
+            window["-MESSAGE-"].update(findFileName(DATA))
             window["-CHANGE-"].update(visible=True)
 
     window.close()
