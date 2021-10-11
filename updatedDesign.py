@@ -3,8 +3,17 @@
 import PySimpleGUI as sg
 
 HEADER_FONT = ("Arial Rounded MT Bold", 25)
-BUTTON_FONT = ("Franklin Gothic Book", 12)
+BUTTON_FONT = ("Franklin Gothic Book", 10)
 FRAME_NAME_FONT = ("Arial Rounded MT Bold", 11)
+listDict = {}
+countries = ['AUS', 'AUT', 'BEL', 'CAN', 'CHL', 'CZE', 'DNK', 'EST', 'FIN', 'FRA', 'DEU', 'GRC', 'HUN', 'ISL', 'IRL',
+             'ISR', 'ITA', 'JPN', 'KOR', 'LVA', 'LTU', 'LUX', 'MEX', 'NLD', 'NZL', 'NOR', 'POL', 'PRT', 'SVK', 'SVN',
+             'ESP', 'SWE', 'CHE', 'TUR', 'GBR', 'USA', 'ARG', 'BRA', 'BRN', 'BGR', 'KHM', 'CHN', 'COL', 'CRI', 'HRV',
+             'CYP', 'IND', 'IDN', 'HKG', 'KAZ', 'MYS', 'MLT', 'MAR', 'PER', 'PHL', 'ROU', 'RUS', 'SAU', 'SGP', 'ZAF',
+             'TWN', 'THA', 'TUN', 'VNM', 'ROW']
+sectors = ['01T03', '05T06', '07T08', '09', '10T12', '13T15', '16', '17T18', '19', '20T21', '22', '23', '24', '25',
+           '26', '27', '28', '29', '30', '31T33', '35T39', '41T43', '45T47', '49T53', '55T56', '58T60', '61', '62T63',
+           '64T66', '68', '69T82', '84', '85', '86T88', '90T96', '97T98']
 
 
 def createUploadPlacement():
@@ -19,9 +28,9 @@ def createUploadPlacement():
 
     uploadButton = sg.FileBrowse("Upload New Data", font=BUTTON_FONT,
                                  file_types=(("CSV Files", "*.csv"), ("excel Files", "*.xlsx")), initial_folder="C:\\",
-                                 key="-CHOOSE-")
+                                 key="-CHOOSE-", size=(14, 1))
 
-    defaultFileButton = sg.Button("Use Default Data", font=BUTTON_FONT, key="-DEFAULT-")
+    defaultFileButton = sg.Button("Use Default Data", font=BUTTON_FONT, key="-DEFAULT-", size=(14, 1))
 
     uploadFrameContentLayout = [[uploadProgress, completeMessage], uploadIcon,
                                 [fileNamePlacement, uploadButton, defaultFileButton]]
@@ -45,14 +54,12 @@ def createOutputFilePlacement():
 
     outPathPlacement = sg.Input(key='-OUT-PATH-', size=(50, 1))
 
-    # uploadButton = sg.FileBrowse("Upload New Data", font=BUTTON_FONT,
-    #                              file_types=(("CSV Files", "*.csv"), ("excel Files", "*.xlsx")), initial_folder="C:\\",
-    #                              key="-CHOOSE-")
+    browseButton = sg.FolderBrowse("Browse", font=BUTTON_FONT, initial_folder="C:\\", key="-BROWSE-OUT-", size=(10, 1))
 
-    outFrameContentLayout = [[defineOutFile, outFileNamePlacement], [defineOutPath, outPathPlacement]]
+    outFrameContentLayout = [[defineOutFile, outFileNamePlacement], [defineOutPath, outPathPlacement, browseButton]]
 
     outFrameContent = [
-        sg.Column(outFrameContentLayout, size=(360, 110))]
+        sg.Column(outFrameContentLayout, size=(600, 75))]
 
     outputFrame = [sg.Frame('Result File:', [outFrameContent], expand_x=True,
                             font=FRAME_NAME_FONT)]
@@ -61,37 +68,31 @@ def createOutputFilePlacement():
     return outPlace
 
 
-# def createMoreOptionForDataPlace():
-#     option1 = sg.Checkbox("", pad=((10, 0), (0, 0)))
-#
-#     option1Text = sg.Text("ادغام تقاضای نهایی مربوط به چین", justification='r', font=BUTTON_FONT,
-#                           enable_events=True, expand_x=True, pad=((140, 0), (0, 0)))
-#
-#     option2 = sg.Checkbox("", pad=((10, 0), (0, 0)))
-#
-#     option2Text = sg.Text("ادغام تقاضای نهایی مربوط به مکزیک", justification='r', font=BUTTON_FONT,
-#                           enable_events=True, expand_x=True, pad=((140, 0), (0, 0)))
-#
-#     moreOptionFrameContentLayout = [[option1Text, option1], [option2Text, option2]]
-#
-#     moreOptionFrameContent = [
-#         sg.Column(moreOptionFrameContentLayout, size=(360, 400), element_justification='r', justification='right')]
-#
-#     moreOptionFrame = [sg.Frame('', [moreOptionFrameContent], element_justification='r', expand_x=True)]
-#
-#     moreOptionPlace = sg.Column([moreOptionFrame], pad=(0, 0), expand_x=True)
-#     return moreOptionPlace
+def createImExporterPlacement():
+    importerCountryInfo = [[sg.Text('Country', justification='left')],
+                           [sg.Combo(countries, default_value='-Select-', key='board', size=(10, 1))]]
+    importerSectorInfo = [[sg.Text('Sector', justification='left')],
+                          [sg.Combo(sectors, default_value='-Select-', key='board1', size=(10, 1))]]
+    importerFrameContent0 = sg.Column(importerCountryInfo)
+    importerFrameContent = sg.Column(importerSectorInfo)
+    importerFrame = sg.Frame('Importer:', [[importerFrameContent0, importerFrameContent]], expand_x=True,
+                             font=FRAME_NAME_FONT)
 
+    exporterCountryInfo = [[sg.Text('Country', justification='left')],
+                           [sg.Combo(countries, default_value='-Select-', key='board2', size=(10, 1))]]
+    exporterSectorInfo = [[sg.Text('Sector', justification='left')],
+                           [sg.Combo(sectors, default_value='-Select-', key='board3', size=(10, 1))]]
+    exporterFrameContent0 = sg.Column(exporterCountryInfo)
+    exporterFrameContent = sg.Column(exporterSectorInfo)
+    exporterFrame = sg.Frame('Exporter:', [[exporterFrameContent0, exporterFrameContent]], expand_x=True,
+                             font=FRAME_NAME_FONT)
 
-def createDataLayout():
-    # moreOptionForDataPlace = createMoreOptionForDataPlace()
-    uploadPlace = createUploadPlacement()
-    # return [moreOptionForDataPlace, uploadPlace]
-    return [uploadPlace]
+    imExporterPlace = sg.Column([[importerFrame, exporterFrame]], pad=(0, 0), expand_x=True)
+    return imExporterPlace
 
 
 def createShockAttrPlacement():
-    shockFrame = [sg.Frame('Parameters And Shock Attributes:', [[sg.T("HI")]], expand_x=True,
+    shockFrame = [sg.Frame('Shock Attributes:', [[sg.T("HI")]], expand_x=True,
                            font=FRAME_NAME_FONT)]
 
     shockPlace = sg.Column([shockFrame], pad=(0, 0), expand_x=True)
@@ -120,9 +121,11 @@ def createScenarioPlacement():
 #     # return [importerExporterPlace, shockDataPlace, scenarioPlace]
 
 
-dataSection = [createDataLayout()]
+dataSection = [createUploadPlacement()]
 
 resultSection = [createOutputFilePlacement()]
+
+imExporterSection = [createImExporterPlacement()]
 
 shockSection = [createShockAttrPlacement()]
 
@@ -142,9 +145,10 @@ def makeWindow(theme):
                        relief=sg.RELIEF_RIDGE, k='-TEXT HEADING-', enable_events=True, expand_x=True)],
               [dataSection],
               [resultSection],
+              [imExporterSection],
               [shockSection],
               [scenarioSection]]
-    return sg.Window('Shock Diffusion Tool', layout, resizable=True)
+    return sg.Window('Shock Diffusion Tool', layout, resizable=True, auto_size_buttons=False)
 
 
 def findFileName(path):
@@ -161,7 +165,7 @@ def main():
     window = makeWindow(sg.theme())
     DATA = ''
     while True:
-        print("DATA::", DATA)
+        # print("DATA::", DATA)
         event, values = window.read(timeout=100)
         if event in (None, 'Exit'):
             break
