@@ -106,12 +106,12 @@ def createShockAttrPlacement():
                                        sg.Radio("Exporter", "RadioDemo")]], expand_x=True)
     space = sg.Column([], size=(90, 1), expand_x=True)
 
-    shockAmountPlacement = sg.Column([[sg.Text("Shock Amount:"), sg.Radio("+", "RadioDemo", font='bold'),
-                                       sg.Radio("--", "RadioDemo"), sg.Input(key="-SHK-AMNT-", size=(10, 1))]],
+    shockAmountPlacement = sg.Column([[sg.Text("Shock Amount:"), sg.Radio("+", "RadioDemo1", font='bold'),
+                                       sg.Radio("--", "RadioDemo1"), sg.Input(key="-SHK-AMNT-", size=(10, 1))]],
                                      expand_x=True)
 
-    shockToPlacement = sg.Column([[sg.Text('Shock To:'), sg.Radio("Intermediate Goods", "RadioDemo"),
-                                   sg.Radio("Final Demands", "RadioDemo")]], expand_x=True)
+    shockToPlacement = sg.Column([[sg.Text('Shock To:'), sg.Radio("Intermediate Goods", "RadioDemo2"),
+                                   sg.Radio("Final Demands", "RadioDemo2")]], expand_x=True)
 
     shockIterationPlacement = sg.Column([[sg.Text("Iteration Count:"), sg.Input(key="-SHK-ITR-", size=(5, 1))]],
                                         expand_x=True)
@@ -131,21 +131,21 @@ def createShockAttrPlacement():
 
 
 def createScenarioPlacement():
-    imSideEfLayout = [[sg.T("Side Effects", font=SUB_FRAME_FONT)], [sg.Radio(IM_SE_OP1, "RadioDemo")],
-                      [sg.Radio(IM_SE_OP2, "RadioDemo")]]
+    imSideEfLayout = [[sg.T("Side Effects", font=SUB_FRAME_FONT)], [sg.Radio(IM_SE_OP1, "RadioDemo3")],
+                      [sg.Radio(IM_SE_OP2, "RadioDemo3")]]
     imSideEf = sg.Column(imSideEfLayout, expand_x=True)
-    imComLayout = [[sg.T("Compensation", font=SUB_FRAME_FONT)], [sg.Radio(IM_CO_OP1, "RadioDemo")],
-                   [sg.Radio(IM_CO_OP2, "RadioDemo")]]
+    imComLayout = [[sg.T("Compensation", font=SUB_FRAME_FONT)], [sg.Radio(IM_CO_OP1, "RadioDemo3")],
+                   [sg.Radio(IM_CO_OP2, "RadioDemo3")]]
     imCom = sg.Column(imComLayout, expand_x=True)
     importerFrameContent = sg.Column([[imSideEf, imCom]])
     importerScenarioFrame = sg.Frame("Scenario For Importer:", [[importerFrameContent]], expand_x=True,
                                      font=FRAME_NAME_FONT)
 
-    exSideEfLayout = [[sg.T("Side Effects", font=SUB_FRAME_FONT)], [sg.Radio(EX_SE_OP1, "RadioDemo")],
-                      [sg.Radio(EX_SE_OP2, "RadioDemo")]]
+    exSideEfLayout = [[sg.T("Side Effects", font=SUB_FRAME_FONT)], [sg.Radio(EX_SE_OP1, "RadioDemo4")],
+                      [sg.Radio(EX_SE_OP2, "RadioDemo4")]]
     exSideEf = sg.Column(exSideEfLayout, expand_x=True)
-    exComLayout = [[sg.T("Compensation", font=SUB_FRAME_FONT)], [sg.Radio(EX_CO_OP1, "RadioDemo")],
-                   [sg.Radio(EX_CO_OP2, "RadioDemo")]]
+    exComLayout = [[sg.T("Compensation", font=SUB_FRAME_FONT)], [sg.Radio(EX_CO_OP1, "RadioDemo4")],
+                   [sg.Radio(EX_CO_OP2, "RadioDemo4")]]
     exCom = sg.Column(exComLayout, expand_x=True)
     exporterFrameContent = sg.Column([[exSideEf, exCom]])
     exporterScenarioFrame = sg.Frame("Scenario For Exporter:", [[exporterFrameContent]], expand_x=True,
