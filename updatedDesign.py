@@ -5,6 +5,16 @@ import PySimpleGUI as sg
 HEADER_FONT = ("Arial Rounded MT Bold", 25)
 BUTTON_FONT = ("Franklin Gothic Book", 10)
 FRAME_NAME_FONT = ("Arial Rounded MT Bold", 11)
+SUB_FRAME_FONT = ("Arial Rounded MT Bold", 9)
+IM_SE_OP1 = "Based on the change of imports, production WOULD CHANGE; therefore, exports would change."
+IM_SE_OP2 = "Based on the change of imports, production WOULD NOT CHANGE; therefore, imports would change."
+IM_CO_OP1 = "The importer chooses the next best option as an alternative."
+IM_CO_OP2 = "The importer chooses the list below as an alternative"
+EX_SE_OP1 = "Based on the change of exports, production WOULD CHANGE; therefore, imports would change."
+EX_SE_OP2 = "Based on the change of exports, production WOULD NOT CHANGE; therefore, exports would change."
+EX_CO_OP1 = "The exporter chooses the next best option as an alternative."
+EX_CO_OP2 = "The exporter chooses the list below as an alternative"
+
 listDict = {}
 countries = ['AUS', 'AUT', 'BEL', 'CAN', 'CHL', 'CZE', 'DNK', 'EST', 'FIN', 'FRA', 'DEU', 'GRC', 'HUN', 'ISL', 'IRL',
              'ISR', 'ITA', 'JPN', 'KOR', 'LVA', 'LTU', 'LUX', 'MEX', 'NLD', 'NZL', 'NOR', 'POL', 'PRT', 'SVK', 'SVN',
@@ -121,25 +131,28 @@ def createShockAttrPlacement():
 
 
 def createScenarioPlacement():
-    scenarioFrame = [sg.Frame('Scenario:', [[sg.T("HI")]], expand_x=True,
-                              font=FRAME_NAME_FONT)]
+    imSideEfLayout = [[sg.T("Side Effects", font=SUB_FRAME_FONT)], [sg.Radio(IM_SE_OP1, "RadioDemo")],
+                      [sg.Radio(IM_SE_OP2, "RadioDemo")]]
+    imSideEf = sg.Column(imSideEfLayout, expand_x=True)
+    imComLayout = [[sg.T("Compensation", font=SUB_FRAME_FONT)], [sg.Radio(IM_CO_OP1, "RadioDemo")],
+                   [sg.Radio(IM_CO_OP2, "RadioDemo")]]
+    imCom = sg.Column(imComLayout, expand_x=True)
+    importerFrameContent = sg.Column([[imSideEf, imCom]])
+    importerScenarioFrame = sg.Frame("Scenario For Importer:", [[importerFrameContent]], expand_x=True,
+                                     font=FRAME_NAME_FONT)
 
-    scenarioPlace = sg.Column([scenarioFrame], pad=(0, 0), expand_x=True)
+    exSideEfLayout = [[sg.T("Side Effects", font=SUB_FRAME_FONT)], [sg.Radio(EX_SE_OP1, "RadioDemo")],
+                      [sg.Radio(EX_SE_OP2, "RadioDemo")]]
+    exSideEf = sg.Column(exSideEfLayout, expand_x=True)
+    exComLayout = [[sg.T("Compensation", font=SUB_FRAME_FONT)], [sg.Radio(EX_CO_OP1, "RadioDemo")],
+                   [sg.Radio(EX_CO_OP2, "RadioDemo")]]
+    exCom = sg.Column(exComLayout, expand_x=True)
+    exporterFrameContent = sg.Column([[exSideEf, exCom]])
+    exporterScenarioFrame = sg.Frame("Scenario For Exporter:", [[exporterFrameContent]], expand_x=True,
+                                     font=FRAME_NAME_FONT)
+
+    scenarioPlace = sg.Column([[importerScenarioFrame], [exporterScenarioFrame]], pad=(0, 0), expand_x=True)
     return scenarioPlace
-
-
-# def chooseImporterExporter():
-#     importerChoices =
-#
-# # def createShockDatePlace():
-#
-# # def createScenarioPlace():
-#
-# def createShockScenarioLayout():
-#     # importerExporterPlace = chooseImporterExporter()
-#     # shockDataPlace = createShockDatePlace()
-#     # scenarioPlace = createScenarioPlace()
-#     # return [importerExporterPlace, shockDataPlace, scenarioPlace]
 
 
 dataSection = [createUploadPlacement()]
