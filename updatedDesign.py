@@ -81,7 +81,7 @@ def createImExporterPlacement():
     exporterCountryInfo = [[sg.Text('Country', justification='left')],
                            [sg.Combo(countries, default_value='-Select-', key='board2', size=(10, 1))]]
     exporterSectorInfo = [[sg.Text('Sector', justification='left')],
-                           [sg.Combo(sectors, default_value='-Select-', key='board3', size=(10, 1))]]
+                          [sg.Combo(sectors, default_value='-Select-', key='board3', size=(10, 1))]]
     exporterFrameContent0 = sg.Column(exporterCountryInfo)
     exporterFrameContent = sg.Column(exporterSectorInfo)
     exporterFrame = sg.Frame('Exporter:', [[exporterFrameContent0, exporterFrameContent]], expand_x=True,
@@ -92,7 +92,28 @@ def createImExporterPlacement():
 
 
 def createShockAttrPlacement():
-    shockFrame = [sg.Frame('Shock Attributes:', [[sg.T("HI")]], expand_x=True,
+    shockSourcePlacement = sg.Column([[sg.Text('Source Of Shock:'), sg.Radio("Importer", "RadioDemo"),
+                                       sg.Radio("Exporter", "RadioDemo")]], expand_x=True)
+    space = sg.Column([], size=(90, 1), expand_x=True)
+
+    shockAmountPlacement = sg.Column([[sg.Text("Shock Amount:"), sg.Radio("+", "RadioDemo", font='bold'),
+                                       sg.Radio("--", "RadioDemo"), sg.Input(key="-SHK-AMNT-", size=(10, 1))]],
+                                     expand_x=True)
+
+    shockToPlacement = sg.Column([[sg.Text('Shock To:'), sg.Radio("Intermediate Goods", "RadioDemo"),
+                                   sg.Radio("Final Demands", "RadioDemo")]], expand_x=True)
+
+    shockIterationPlacement = sg.Column([[sg.Text("Iteration Count:"), sg.Input(key="-SHK-ITR-", size=(5, 1))]],
+                                        expand_x=True)
+
+    shockThresholdPlacement = sg.Column([[sg.Text("Threshold:"), sg.Input(key="-SHK-THR-", size=(5, 1))]],
+                                        expand_x=True)
+    shockFrameContentLayout = [[shockSourcePlacement, space, shockAmountPlacement],
+                               [shockToPlacement, shockIterationPlacement, shockThresholdPlacement]]
+
+    shockFrameContent = [sg.Column(shockFrameContentLayout, expand_x=True)]
+
+    shockFrame = [sg.Frame('Shock Attributes:', [shockFrameContent], expand_x=True,
                            font=FRAME_NAME_FONT)]
 
     shockPlace = sg.Column([shockFrame], pad=(0, 0), expand_x=True)
@@ -148,6 +169,7 @@ def makeWindow(theme):
               [imExporterSection],
               [shockSection],
               [scenarioSection]]
+
     return sg.Window('Shock Diffusion Tool', layout, resizable=True, auto_size_buttons=False)
 
 
