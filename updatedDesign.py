@@ -9,11 +9,11 @@ SUB_FRAME_FONT = ("Arial Rounded MT Bold", 9)
 IM_SE_OP1 = "Based on the change of imports, production WOULD CHANGE; therefore, exports would change."
 IM_SE_OP2 = "Based on the change of imports, production WOULD NOT CHANGE; therefore, imports would change."
 IM_CO_OP1 = "The importer chooses the next best option as an alternative."
-IM_CO_OP2 = "The importer chooses the list below as an alternative"
+IM_CO_OP2 = "The importer chooses the front list as an alternative"
 EX_SE_OP1 = "Based on the change of exports, production WOULD CHANGE; therefore, imports would change."
 EX_SE_OP2 = "Based on the change of exports, production WOULD NOT CHANGE; therefore, exports would change."
 EX_CO_OP1 = "The exporter chooses the next best option as an alternative."
-EX_CO_OP2 = "The exporter chooses the list below as an alternative"
+EX_CO_OP2 = "The exporter chooses the front list as an alternative"
 
 listDict = {}
 countries = ['AUS', 'AUT', 'BEL', 'CAN', 'CHL', 'CZE', 'DNK', 'EST', 'FIN', 'FRA', 'DEU', 'GRC', 'HUN', 'ISL', 'IRL',
@@ -135,9 +135,9 @@ def createScenarioPlacement():
                       [sg.Radio(IM_SE_OP2, "RadioDemo3")]]
     imSideEf = sg.Column(imSideEfLayout, expand_x=True)
     imComLayout = [[sg.T("Compensation", font=SUB_FRAME_FONT)], [sg.Radio(IM_CO_OP1, "RadioDemo3")],
-                   [sg.Radio(IM_CO_OP2, "RadioDemo3")]]
+                   [sg.Radio(IM_CO_OP2, "RadioDemo3"), sg.Multiline('')]]
     imCom = sg.Column(imComLayout, expand_x=True)
-    importerFrameContent = sg.Column([[imSideEf, imCom]])
+    importerFrameContent = sg.Column([[imSideEf], [imCom]], expand_x=True)
     importerScenarioFrame = sg.Frame("Scenario For Importer:", [[importerFrameContent]], expand_x=True,
                                      font=FRAME_NAME_FONT)
 
@@ -145,9 +145,9 @@ def createScenarioPlacement():
                       [sg.Radio(EX_SE_OP2, "RadioDemo4")]]
     exSideEf = sg.Column(exSideEfLayout, expand_x=True)
     exComLayout = [[sg.T("Compensation", font=SUB_FRAME_FONT)], [sg.Radio(EX_CO_OP1, "RadioDemo4")],
-                   [sg.Radio(EX_CO_OP2, "RadioDemo4")]]
+                   [sg.Radio(EX_CO_OP2, "RadioDemo4"), sg.Multiline('')]]
     exCom = sg.Column(exComLayout, expand_x=True)
-    exporterFrameContent = sg.Column([[exSideEf, exCom]])
+    exporterFrameContent = sg.Column([[exSideEf], [exCom]])
     exporterScenarioFrame = sg.Frame("Scenario For Exporter:", [[exporterFrameContent]], expand_x=True,
                                      font=FRAME_NAME_FONT)
 
@@ -177,13 +177,14 @@ def makeWindow(theme):
     layout = [[sg.Menu(menu_def, key='-MENU-')],
               [sg.Text('Shock Diffusion Tool', size=(38, 1), justification='center', font=HEADER_FONT,
                        relief=sg.RELIEF_RIDGE, k='-TEXT HEADING-', enable_events=True, expand_x=True)],
-              [dataSection],
-              [resultSection],
-              [imExporterSection],
-              [shockSection],
-              [scenarioSection]]
+              [createUploadPlacement()],
+              [createOutputFilePlacement()],
+              [createImExporterPlacement()],
+              [createShockAttrPlacement()],
+              [createScenarioPlacement()]]
 
-    return sg.Window('Shock Diffusion Tool', layout, resizable=True, auto_size_buttons=False)
+    scrollableLayout = [[sg.Column(layout, expand_x=True, expand_y=True, scrollable=True, vertical_scroll_only=True)]]
+    return sg.Window('Shock Diffusion Tool', scrollableLayout, resizable=True, auto_size_buttons=False)
 
 
 def findFileName(path):
