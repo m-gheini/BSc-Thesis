@@ -27,10 +27,11 @@ sectors = ['01T03', '05T06', '07T08', '09', '10T12', '13T15', '16', '17T18', '19
 
 
 def createUploadPlacement():
-    uploadProgress = sg.ProgressBar(1000, orientation='h', size=(20, 20), key="-PROGRESS BAR-", visible=False,
-                                    pad=((65, 0), (20, 0)))
+    uploadProgress = sg.ProgressBar(100, orientation='h', size=(20, 20), key="-PROGRESS BAR-", visible=False)
 
-    completeMessage = sg.Text(key="-MESSAGE-", visible=False, pad=((65, 0), (0, 0)))
+    percent = sg.Text("  0%", size=(4, 1), key='-PERCENT-', visible=False)
+
+    completeMessage = sg.In(key="-MESSAGE-", visible=False)
 
     uploadIcon = [sg.Image("Assets/uploadIcon.png", key="-UPLOAD ICON-", pad=((153, 153), (0, 0)))]
 
@@ -42,7 +43,7 @@ def createUploadPlacement():
 
     defaultFileButton = sg.Button("Use Default Data", font=BUTTON_FONT, key="-DEFAULT-", size=(14, 1))
 
-    uploadFrameContentLayout = [[uploadProgress, completeMessage], uploadIcon,
+    uploadFrameContentLayout = [[uploadProgress, percent, completeMessage], uploadIcon,
                                 [fileNamePlacement, uploadButton, defaultFileButton]]
 
     uploadFrameContent = [
@@ -196,6 +197,20 @@ def findFileName(path):
     # dot = path.find(".")
     return path[(lastSlash + 1):]
 
+def changeLayoutAfterUpload(window, DATA):
+    window["-UPLOAD ICON-"].update(visible=False)
+    window["-CHOOSE-"].update(visible=False)
+    window["-DEFAULT-"].update(visible=False)
+    window['-PROGRESS BAR-'].update(visible=True, current_count=0)
+    window['-PERCENT-'].update(visible=True)
+    for i in range(100):
+        window['-PROGRESS BAR-'].UpdateBar(i + 1)
+        window['-PERCENT-'].update(value=f'{i + 1:>3d}%')
+    window['-PROGRESS BAR-'].update(visible=False, current_count=0)
+    window['-PERCENT-'].update(visible=False)
+    window["-MESSAGE-"].update(visible=True)
+    window["-MESSAGE-"].update(DATA)
+
 
 def main():
     window = makeWindow(sg.theme())
@@ -208,25 +223,12 @@ def main():
 
         if event == "-FILE-":
             DATA = values["-FILE-"]
-            window["-UPLOAD ICON-"].update(visible=False)
-            window["-CHOOSE-"].update(visible=False)
-            window["-DEFAULT-"].update(visible=False)
-            window['-PROGRESS BAR-'].update(visible=True, current_count=0)
-            for i in range(1000):
-                window['-PROGRESS BAR-'].UpdateBar(i + 1)
-            window["-MESSAGE-"].update(visible=True)
-            window["-MESSAGE-"].update(findFileName(DATA))
+            if DATA != '':
+                changeLayoutAfterUpload(window, DATA)
 
         if event == "-DEFAULT-":
             DATA = "Assets/ICIO2018_2015.CSV"
-            window["-UPLOAD ICON-"].update(visible=False)
-            window["-CHOOSE-"].update(visible=False)
-            window["-DEFAULT-"].update(visible=False)
-            window['-PROGRESS BAR-'].update(visible=True, current_count=0)
-            for i in range(1000):
-                window['-PROGRESS BAR-'].UpdateBar(i + 1)
-            window["-MESSAGE-"].update(visible=True)
-            window["-MESSAGE-"].update(findFileName(DATA))
+            changeLayoutAfterUpload(window, DATA)
 
     window.close()
     exit(0)
