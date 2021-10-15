@@ -33,7 +33,7 @@ def createUploadPlacement():
 
     completeMessage = sg.In(key="-MESSAGE-", visible=False)
 
-    uploadIcon = [sg.Image("Assets/uploadIcon.png", key="-UPLOAD ICON-", pad=((153, 153), (0, 0)))]
+    uploadIcon = [sg.Image("../Assets/uploadIcon.png", key="-UPLOAD ICON-", pad=((153, 153), (0, 0)))]
 
     fileNamePlacement = sg.In(size=(30, 10), enable_events=True, key="-FILE-", visible=False)
 
@@ -228,7 +228,7 @@ def main():
                 changeLayoutAfterUpload(window, DATA)
 
         if event == "-DEFAULT-":
-            DATA = "Assets/ICIO2018_2015.CSV"
+            DATA = "../Assets/ICIO2018_2015.CSV"
             changeLayoutAfterUpload(window, DATA)
 
     window.close()
