@@ -59,13 +59,13 @@ def createUploadPlacement():
 def createOutputFilePlacement():
     defineOutFile = sg.Text('Result File Name:')
 
-    outFileNamePlacement = sg.Input(key='-OUT-NAME-', size=(19, 1))
+    outFileNamePlacement = sg.Input(key='-OUT NAME-', size=(19, 1))
 
     defineOutPath = sg.Text('Path To Save Result:')
 
-    outPathPlacement = sg.Input(key='-OUT-PATH-', size=(50, 1))
+    outPathPlacement = sg.Input(key='-OUT PATH-', size=(50, 1))
 
-    browseButton = sg.FolderBrowse("Browse", font=BUTTON_FONT, initial_folder="C:\\", key="-BROWSE-OUT-", size=(10, 1))
+    browseButton = sg.FolderBrowse("Browse", font=BUTTON_FONT, initial_folder="C:\\", key="-BROWSE OUT-", size=(10, 1))
 
     outFrameContentLayout = [[defineOutFile, outFileNamePlacement], [defineOutPath, outPathPlacement, browseButton]]
 
@@ -188,14 +188,15 @@ def makeWindow(theme):
     return sg.Window('Shock Diffusion Tool', scrollableLayout, resizable=True, auto_size_buttons=False)
 
 
-def findFileName(path):
-    temp = 0
-    lastSlash = 0
-    while temp != -1:
-        lastSlash = temp
-        temp = path.find("/", temp + 1)
-    # dot = path.find(".")
-    return path[(lastSlash + 1):]
+# def findFileName(path):
+#     temp = 0
+#     lastSlash = 0
+#     while temp != -1:
+#         lastSlash = temp
+#         temp = path.find("/", temp + 1)
+#     # dot = path.find(".")
+#     return path[(lastSlash + 1):]
+
 
 def changeLayoutAfterUpload(window, DATA):
     window["-UPLOAD ICON-"].update(visible=False)
