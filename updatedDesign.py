@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import PySimpleGUI as sg
+import appLogic as func
 
 HEADER_FONT = ("Arial Rounded MT Bold", 25)
 BUTTON_FONT = ("Franklin Gothic Book", 10)
@@ -33,7 +34,7 @@ def createUploadPlacement():
 
     completeMessage = sg.In(key="-MESSAGE-", visible=False)
 
-    uploadIcon = [sg.Image("../Assets/uploadIcon.png", key="-UPLOAD ICON-", pad=((153, 153), (0, 0)))]
+    uploadIcon = [sg.Image("./Assets/uploadIcon.png", key="-UPLOAD ICON-", pad=((153, 153), (0, 0)))]
 
     fileNamePlacement = sg.In(size=(30, 10), enable_events=True, key="-FILE-", visible=False)
 
@@ -57,13 +58,13 @@ def createUploadPlacement():
 
 
 def createOutputFilePlacement():
-    defineOutFile = sg.Text('Result File Name:')
+    defineOutFile = sg.Text('Result File Name (without specifying file type):')
 
-    outFileNamePlacement = sg.Input(key='-OUT NAME-', size=(19, 1))
+    outFileNamePlacement = sg.In(key="-OUT NAME-", size=(19, 1), enable_events=True)
 
     defineOutPath = sg.Text('Path To Save Result:')
 
-    outPathPlacement = sg.Input(key='-OUT PATH-', size=(50, 1))
+    outPathPlacement = sg.In(key="-OUT PATH-", size=(50, 1),enable_events=True)
 
     browseButton = sg.FolderBrowse("Browse", font=BUTTON_FONT, initial_folder="C:\\", key="-BROWSE OUT-", size=(10, 1))
 
@@ -81,18 +82,18 @@ def createOutputFilePlacement():
 
 def createImExporterPlacement():
     importerCountryInfo = [[sg.Text('Country', justification='left')],
-                           [sg.Combo(countries, default_value='-Select-', key='board', size=(10, 1))]]
+                           [sg.Combo(countries, default_value='-Select-', key='board', size=(10, 1), disabled=True)]]
     importerSectorInfo = [[sg.Text('Sector', justification='left')],
-                          [sg.Combo(sectors, default_value='-Select-', key='board1', size=(10, 1))]]
+                          [sg.Combo(sectors, default_value='-Select-', key='board1', size=(10, 1), disabled=True)]]
     importerFrameContent0 = sg.Column(importerCountryInfo)
     importerFrameContent = sg.Column(importerSectorInfo)
     importerFrame = sg.Frame('Importer:', [[importerFrameContent0, importerFrameContent]], expand_x=True,
                              font=FRAME_NAME_FONT)
 
     exporterCountryInfo = [[sg.Text('Country', justification='left')],
-                           [sg.Combo(countries, default_value='-Select-', key='board2', size=(10, 1))]]
+                           [sg.Combo(countries, default_value='-Select-', key='board2', size=(10, 1), disabled=True)]]
     exporterSectorInfo = [[sg.Text('Sector', justification='left')],
-                          [sg.Combo(sectors, default_value='-Select-', key='board3', size=(10, 1))]]
+                          [sg.Combo(sectors, default_value='-Select-', key='board3', size=(10, 1), disabled=True)]]
     exporterFrameContent0 = sg.Column(exporterCountryInfo)
     exporterFrameContent = sg.Column(exporterSectorInfo)
     exporterFrame = sg.Frame('Exporter:', [[exporterFrameContent0, exporterFrameContent]], expand_x=True,
@@ -211,14 +212,18 @@ def changeLayoutAfterUpload(window, DATA):
     window['-PERCENT-'].update(visible=False)
     window["-MESSAGE-"].update(visible=True)
     window["-MESSAGE-"].update(DATA)
+    func.welcome()
 
 
 def main():
     window = makeWindow(sg.theme())
     DATA = ''
+    outFileName = ''
+    outFilePath = ''
     while True:
         # print("DATA::", DATA)
-        event, values = window.read(timeout=100)
+        event, values = window.read()
+        print(event)
         if event in (None, 'Exit'):
             break
 
@@ -228,8 +233,19 @@ def main():
                 changeLayoutAfterUpload(window, DATA)
 
         if event == "-DEFAULT-":
-            DATA = "../Assets/ICIO2018_2015.CSV"
+            DATA = "./Assets/ICIO2018_2015.CSV"
             changeLayoutAfterUpload(window, DATA)
+
+        if event == "-OUT NAME-":
+            print("-OUT NAME-")
+            outFileName = values["-OUT NAME-"]
+
+        if event == "-OUT PATH-":
+            print("-OUT PATH-")
+            outFilePath = values["-OUT PATH-"]
+            if outFileName != '' and outFilePath != '':
+                print("IN IF")
+                func.getResultFileAttr(outFileName, outFilePath)
 
     window.close()
     exit(0)
