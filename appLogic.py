@@ -10,7 +10,7 @@ def getResultFileAttr(name, path):
     print("2")
     name = name + '.CSV'
     print("3")
-    open(os.path.join(path, name), 'wb')
+    print(os.path.join(path, name))
     print("4")
 
 

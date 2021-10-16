@@ -85,10 +85,10 @@ def createOutputFilePlacement():
 def createImExporterPlacement():
     importerCountryInfo = [[sg.Text('Country', justification='left')],
                            [sg.Combo(countries, default_value='-Select-', key='-IM COUNTRIES-', size=(10, 1),
-                                     disabled=True)]]
+                                     disabled=True, enable_events=True)]]
     importerSectorInfo = [[sg.Text('Sector', justification='left')],
                           [sg.Combo(sectors, default_value='-Select-', key='-IM SECTORS-', size=(10, 1),
-                                    disabled=True)]]
+                                    disabled=True, enable_events=True)]]
     importerFrameContent0 = sg.Column(importerCountryInfo)
     importerFrameContent = sg.Column(importerSectorInfo)
     importerFrame = sg.Frame('Importer:', [[importerFrameContent0, importerFrameContent]], expand_x=True,
@@ -96,10 +96,10 @@ def createImExporterPlacement():
 
     exporterCountryInfo = [[sg.Text('Country', justification='left')],
                            [sg.Combo(countries, default_value='-Select-', key='-EX COUNTRIES-', size=(10, 1),
-                                     disabled=True)]]
+                                     disabled=True, enable_events=True)]]
     exporterSectorInfo = [[sg.Text('Sector', justification='left')],
                           [sg.Combo(sectors, default_value='-Select-', key='-EX SECTORS-', size=(10, 1),
-                                    disabled=True)]]
+                                    disabled=True, enable_events=True)]]
     exporterFrameContent0 = sg.Column(exporterCountryInfo)
     exporterFrameContent = sg.Column(exporterSectorInfo)
     exporterFrame = sg.Frame('Exporter:', [[exporterFrameContent0, exporterFrameContent]], expand_x=True,
@@ -110,12 +110,13 @@ def createImExporterPlacement():
 
 
 def createShockAttrPlacement():
-    shockSourcePlacement = sg.Column([[sg.Text('Source Of Shock:'), sg.Radio("Importer", "RadioDemo"),
+    shockSourcePlacement = sg.Column([[sg.Text('Source Of Shock:'), sg.Radio("Importer", "RadioDemo", disabled=True),
                                        sg.Radio("Exporter", "RadioDemo")]], expand_x=True)
     space = sg.Column([], size=(90, 1), expand_x=True)
 
     shockAmountPlacement = sg.Column([[sg.Text("Shock Amount:"), sg.Radio("+", "RadioDemo1", font='bold'),
-                                       sg.Radio("--", "RadioDemo1"), sg.Input(key="-SHK-AMNT-", size=(10, 1))]],
+                                       sg.Radio("--", "RadioDemo1"),
+                                       sg.Input(key="-SHK-AMNT-", size=(10, 1), disabled=True)]],
                                      expand_x=True)
 
     shockToPlacement = sg.Column([[sg.Text('Shock To:'), sg.Radio("Intermediate Goods", "RadioDemo2"),
@@ -189,7 +190,9 @@ def makeWindow(theme):
               [createOutputFilePlacement()],
               [createImExporterPlacement()],
               [createShockAttrPlacement()],
-              [createScenarioPlacement()]]
+              [createScenarioPlacement()],
+              [sg.Button("Start Shock Diffusion", font=BUTTON_FONT, key="-START-", size=(20, 1),
+                         pad=((350, 350), (0, 0)), button_color="green", border_width=3)]]
 
     scrollableLayout = [[sg.Column(layout, expand_x=True, expand_y=True, scrollable=True, vertical_scroll_only=True)]]
     return sg.Window('Shock Diffusion Tool', scrollableLayout, resizable=True, auto_size_buttons=False)
@@ -220,14 +223,10 @@ def changeLayoutAfterUpload(window, DATA):
     window["-MESSAGE-"].update(DATA)
     updatedCountries = func.getCountries(DATA)
     updatedSectors = func.getSectors(DATA)
-    window["-EX COUNTRIES-"].update(disabled=False)
-    window["-EX COUNTRIES-"].update(values=updatedCountries)
-    window["-EX SECTORS-"].update(disabled=False)
-    window["-EX SECTORS-"].update(values=updatedSectors)
-    window["-IM COUNTRIES-"].update(disabled=False)
-    window["-IM COUNTRIES-"].update(values=updatedCountries)
-    window["-IM SECTORS-"].update(disabled=False)
-    window["-IM SECTORS-"].update(values=updatedSectors)
+    window["-EX COUNTRIES-"].update(disabled=False, values=updatedCountries)
+    window["-IM COUNTRIES-"].update(disabled=False, values=updatedCountries)
+    window["-EX SECTORS-"].update(disabled=False, values=updatedSectors)
+    window["-IM SECTORS-"].update(disabled=False, values=updatedSectors)
     func.welcome()
 
 
