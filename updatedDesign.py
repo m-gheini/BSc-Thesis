@@ -17,20 +17,22 @@ EX_CO_OP1 = "The exporter chooses the next best option as an alternative."
 EX_CO_OP2 = "The exporter chooses the front list as an alternative"
 
 listDict = {}
-countries = ['AUS', 'AUT', 'BEL', 'CAN', 'CHL', 'CZE', 'DNK', 'EST', 'FIN', 'FRA', 'DEU', 'GRC', 'HUN', 'ISL', 'IRL',
-             'ISR', 'ITA', 'JPN', 'KOR', 'LVA', 'LTU', 'LUX', 'MEX', 'NLD', 'NZL', 'NOR', 'POL', 'PRT', 'SVK', 'SVN',
-             'ESP', 'SWE', 'CHE', 'TUR', 'GBR', 'USA', 'ARG', 'BRA', 'BRN', 'BGR', 'KHM', 'CHN', 'COL', 'CRI', 'HRV',
-             'CYP', 'IND', 'IDN', 'HKG', 'KAZ', 'MYS', 'MLT', 'MAR', 'PER', 'PHL', 'ROU', 'RUS', 'SAU', 'SGP', 'ZAF',
-             'TWN', 'THA', 'TUN', 'VNM', 'ROW']
-sectors = ['01T03', '05T06', '07T08', '09', '10T12', '13T15', '16', '17T18', '19', '20T21', '22', '23', '24', '25',
-           '26', '27', '28', '29', '30', '31T33', '35T39', '41T43', '45T47', '49T53', '55T56', '58T60', '61', '62T63',
-           '64T66', '68', '69T82', '84', '85', '86T88', '90T96', '97T98']
+# countries = ['AUS', 'AUT', 'BEL', 'CAN', 'CHL', 'CZE', 'DNK', 'EST', 'FIN', 'FRA', 'DEU', 'GRC', 'HUN', 'ISL', 'IRL',
+#              'ISR', 'ITA', 'JPN', 'KOR', 'LVA', 'LTU', 'LUX', 'MEX', 'NLD', 'NZL', 'NOR', 'POL', 'PRT', 'SVK', 'SVN',
+#              'ESP', 'SWE', 'CHE', 'TUR', 'GBR', 'USA', 'ARG', 'BRA', 'BRN', 'BGR', 'KHM', 'CHN', 'COL', 'CRI', 'HRV',
+#              'CYP', 'IND', 'IDN', 'HKG', 'KAZ', 'MYS', 'MLT', 'MAR', 'PER', 'PHL', 'ROU', 'RUS', 'SAU', 'SGP', 'ZAF',
+#              'TWN', 'THA', 'TUN', 'VNM', 'ROW']
+countries = []
+# sectors = ['01T03', '05T06', '07T08', '09', '10T12', '13T15', '16', '17T18', '19', '20T21', '22', '23', '24', '25',
+#            '26', '27', '28', '29', '30', '31T33', '35T39', '41T43', '45T47', '49T53', '55T56', '58T60', '61', '62T63',
+#            '64T66', '68', '69T82', '84', '85', '86T88', '90T96', '97T98']
+sectors = []
 
 
 def createUploadPlacement():
-    uploadProgress = sg.ProgressBar(100, orientation='h', size=(20, 20), key="-PROGRESS BAR-", visible=False)
+    uploadProgress = sg.ProgressBar(1000, orientation='h', size=(20, 20), key="-PROGRESS BAR-", visible=False)
 
-    percent = sg.Text("  0%", size=(4, 1), key='-PERCENT-', visible=False)
+    percent = sg.Text("0%", size=(5, 1), key='-PERCENT-', visible=False)
 
     completeMessage = sg.In(key="-MESSAGE-", visible=False)
 
@@ -48,7 +50,7 @@ def createUploadPlacement():
                                 [fileNamePlacement, uploadButton, defaultFileButton]]
 
     uploadFrameContent = [
-        sg.Column(uploadFrameContentLayout, size=(360, 110), element_justification='c', justification='center')]
+        sg.Column(uploadFrameContentLayout, size=(365, 110), element_justification='c', justification='center')]
 
     uploadFrame = [sg.Frame('Input-Output Table:', [uploadFrameContent], expand_x=True,
                             font=FRAME_NAME_FONT)]
@@ -64,7 +66,7 @@ def createOutputFilePlacement():
 
     defineOutPath = sg.Text('Path To Save Result:')
 
-    outPathPlacement = sg.In(key="-OUT PATH-", size=(50, 1),enable_events=True)
+    outPathPlacement = sg.In(key="-OUT PATH-", size=(50, 1), enable_events=True)
 
     browseButton = sg.FolderBrowse("Browse", font=BUTTON_FONT, initial_folder="C:\\", key="-BROWSE OUT-", size=(10, 1))
 
@@ -82,18 +84,22 @@ def createOutputFilePlacement():
 
 def createImExporterPlacement():
     importerCountryInfo = [[sg.Text('Country', justification='left')],
-                           [sg.Combo(countries, default_value='-Select-', key='board', size=(10, 1), disabled=True)]]
+                           [sg.Combo(countries, default_value='-Select-', key='-IM COUNTRIES-', size=(10, 1),
+                                     disabled=True)]]
     importerSectorInfo = [[sg.Text('Sector', justification='left')],
-                          [sg.Combo(sectors, default_value='-Select-', key='board1', size=(10, 1), disabled=True)]]
+                          [sg.Combo(sectors, default_value='-Select-', key='-IM SECTORS-', size=(10, 1),
+                                    disabled=True)]]
     importerFrameContent0 = sg.Column(importerCountryInfo)
     importerFrameContent = sg.Column(importerSectorInfo)
     importerFrame = sg.Frame('Importer:', [[importerFrameContent0, importerFrameContent]], expand_x=True,
                              font=FRAME_NAME_FONT)
 
     exporterCountryInfo = [[sg.Text('Country', justification='left')],
-                           [sg.Combo(countries, default_value='-Select-', key='board2', size=(10, 1), disabled=True)]]
+                           [sg.Combo(countries, default_value='-Select-', key='-EX COUNTRIES-', size=(10, 1),
+                                     disabled=True)]]
     exporterSectorInfo = [[sg.Text('Sector', justification='left')],
-                          [sg.Combo(sectors, default_value='-Select-', key='board3', size=(10, 1), disabled=True)]]
+                          [sg.Combo(sectors, default_value='-Select-', key='-EX SECTORS-', size=(10, 1),
+                                    disabled=True)]]
     exporterFrameContent0 = sg.Column(exporterCountryInfo)
     exporterFrameContent = sg.Column(exporterSectorInfo)
     exporterFrame = sg.Frame('Exporter:', [[exporterFrameContent0, exporterFrameContent]], expand_x=True,
@@ -205,13 +211,23 @@ def changeLayoutAfterUpload(window, DATA):
     window["-DEFAULT-"].update(visible=False)
     window['-PROGRESS BAR-'].update(visible=True, current_count=0)
     window['-PERCENT-'].update(visible=True)
-    for i in range(100):
-        window['-PROGRESS BAR-'].UpdateBar(i + 1)
-        window['-PERCENT-'].update(value=f'{i + 1:>3d}%')
+    for i in range(1000):
+        window['-PROGRESS BAR-'].UpdateBar((i + 1))
+        window['-PERCENT-'].update(value=f'{(i + 1) / 10:.1f}%')
     window['-PROGRESS BAR-'].update(visible=False, current_count=0)
     window['-PERCENT-'].update(visible=False)
     window["-MESSAGE-"].update(visible=True)
     window["-MESSAGE-"].update(DATA)
+    updatedCountries = func.getCountries(DATA)
+    updatedSectors = func.getSectors(DATA)
+    window["-EX COUNTRIES-"].update(disabled=False)
+    window["-EX COUNTRIES-"].update(values=updatedCountries)
+    window["-EX SECTORS-"].update(disabled=False)
+    window["-EX SECTORS-"].update(values=updatedSectors)
+    window["-IM COUNTRIES-"].update(disabled=False)
+    window["-IM COUNTRIES-"].update(values=updatedCountries)
+    window["-IM SECTORS-"].update(disabled=False)
+    window["-IM SECTORS-"].update(values=updatedSectors)
     func.welcome()
 
 
