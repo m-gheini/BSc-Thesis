@@ -110,22 +110,34 @@ def createImExporterPlacement():
 
 
 def createShockAttrPlacement():
-    shockSourcePlacement = sg.Column([[sg.Text('Source Of Shock:'), sg.Radio("Importer", "RadioDemo", disabled=True),
-                                       sg.Radio("Exporter", "RadioDemo")]], expand_x=True)
+    shockSourcePlacement = sg.Column(
+        [[sg.Text('Source Of Shock:'),
+          sg.Radio("Importer", "RadioDemo", disabled=True, key="-SRC SHK IM-", enable_events=True),
+          sg.Radio("Exporter", "RadioDemo", disabled=True, key="-SRC SHK EX-", enable_events=True)]], expand_x=True)
     space = sg.Column([], size=(90, 1), expand_x=True)
 
-    shockAmountPlacement = sg.Column([[sg.Text("Shock Amount:"), sg.Radio("+", "RadioDemo1", font='bold'),
-                                       sg.Radio("--", "RadioDemo1"),
-                                       sg.Input(key="-SHK-AMNT-", size=(10, 1), disabled=True)]],
+    shockAmountPlacement = sg.Column([[sg.Text("Shock Amount:"),
+                                       sg.Radio("+", "RadioDemo1", font='bold', disabled=True, key="-SHK SGN POS-",
+                                                enable_events=True),
+                                       sg.Radio("--", "RadioDemo1", disabled=True, key="-SHK SGN NEG-",
+                                                enable_events=True),
+                                       sg.Input(key="-SHK AMOUNT-", size=(10, 1), disabled=True,
+                                                enable_events=True)]],
                                      expand_x=True)
 
-    shockToPlacement = sg.Column([[sg.Text('Shock To:'), sg.Radio("Intermediate Goods", "RadioDemo2"),
-                                   sg.Radio("Final Demands", "RadioDemo2")]], expand_x=True)
+    shockToPlacement = sg.Column([[sg.Text('Shock To:'),
+                                   sg.Radio("Intermediate Goods", "RadioDemo2", disabled=True, key="-SHK TO IG-",
+                                            enable_events=True),
+                                   sg.Radio("Final Demands", "RadioDemo2", disabled=True, key="-SHK TO FD-",
+                                            enable_events=True)]], expand_x=True)
 
-    shockIterationPlacement = sg.Column([[sg.Text("Iteration Count:"), sg.Input(key="-SHK-ITR-", size=(5, 1))]],
-                                        expand_x=True)
+    shockIterationPlacement = sg.Column(
+        [[sg.Text("Iteration Count:"), sg.Input(key="-SHK ITR-", size=(5, 1), disabled=True,
+                                                enable_events=True)]],
+        expand_x=True)
 
-    shockThresholdPlacement = sg.Column([[sg.Text("Threshold:"), sg.Input(key="-SHK-THR-", size=(5, 1))]],
+    shockThresholdPlacement = sg.Column([[sg.Text("Threshold:"), sg.Input(key="-SHK THR-", size=(5, 1), disabled=True,
+                                                                          enable_events=True)]],
                                         expand_x=True)
     shockFrameContentLayout = [[shockSourcePlacement, space, shockAmountPlacement],
                                [shockToPlacement, shockIterationPlacement, shockThresholdPlacement]]
@@ -140,21 +152,35 @@ def createShockAttrPlacement():
 
 
 def createScenarioPlacement():
-    imSideEfLayout = [[sg.T("Side Effects", font=SUB_FRAME_FONT)], [sg.Radio(IM_SE_OP1, "RadioDemo3")],
-                      [sg.Radio(IM_SE_OP2, "RadioDemo3")]]
+    imSideEfLayout = [[sg.T("Side Effects", font=SUB_FRAME_FONT)],
+                      [sg.Radio(IM_SE_OP1, "RadioDemo3", disabled=True, key="-SCN IM OP1-",
+                                enable_events=True)],
+                      [sg.Radio(IM_SE_OP2, "RadioDemo3", disabled=True, key="-SCN IM OP2-",
+                                enable_events=True)]]
     imSideEf = sg.Column(imSideEfLayout, expand_x=True)
-    imComLayout = [[sg.T("Compensation", font=SUB_FRAME_FONT)], [sg.Radio(IM_CO_OP1, "RadioDemo3")],
-                   [sg.Radio(IM_CO_OP2, "RadioDemo3"), sg.Multiline('')]]
+    imComLayout = [[sg.T("Compensation", font=SUB_FRAME_FONT)],
+                   [sg.Radio(IM_CO_OP1, "RadioDemo3", disabled=True, key="-SCN IM OP3-",
+                             enable_events=True)],
+                   [sg.Radio(IM_CO_OP2, "RadioDemo3", disabled=True, key="-SCN IM OP4-",
+                             enable_events=True), sg.Multiline('', disabled=True, key="-IM ALTER-",
+                                                               enable_events=True)]]
     imCom = sg.Column(imComLayout, expand_x=True)
     importerFrameContent = sg.Column([[imSideEf], [imCom]], expand_x=True)
     importerScenarioFrame = sg.Frame("Scenario For Importer:", [[importerFrameContent]], expand_x=True,
                                      font=FRAME_NAME_FONT)
 
-    exSideEfLayout = [[sg.T("Side Effects", font=SUB_FRAME_FONT)], [sg.Radio(EX_SE_OP1, "RadioDemo4")],
-                      [sg.Radio(EX_SE_OP2, "RadioDemo4")]]
+    exSideEfLayout = [[sg.T("Side Effects", font=SUB_FRAME_FONT)],
+                      [sg.Radio(EX_SE_OP1, "RadioDemo4", disabled=True, key="-SCN EX OP1-",
+                                enable_events=True)],
+                      [sg.Radio(EX_SE_OP2, "RadioDemo4", disabled=True, key="-SCN EX OP2-",
+                                enable_events=True)]]
     exSideEf = sg.Column(exSideEfLayout, expand_x=True)
-    exComLayout = [[sg.T("Compensation", font=SUB_FRAME_FONT)], [sg.Radio(EX_CO_OP1, "RadioDemo4")],
-                   [sg.Radio(EX_CO_OP2, "RadioDemo4"), sg.Multiline('')]]
+    exComLayout = [[sg.T("Compensation", font=SUB_FRAME_FONT)],
+                   [sg.Radio(EX_CO_OP1, "RadioDemo4", disabled=True, key="-SCN EX OP3-",
+                             enable_events=True)],
+                   [sg.Radio(EX_CO_OP2, "RadioDemo4", disabled=True, key="-SCN EX OP4-",
+                             enable_events=True), sg.Multiline('', disabled=True, key="-EX ALTER-",
+                                                               enable_events=True)]]
     exCom = sg.Column(exComLayout, expand_x=True)
     exporterFrameContent = sg.Column([[exSideEf], [exCom]])
     exporterScenarioFrame = sg.Frame("Scenario For Exporter:", [[exporterFrameContent]], expand_x=True,
@@ -192,7 +218,7 @@ def makeWindow(theme):
               [createShockAttrPlacement()],
               [createScenarioPlacement()],
               [sg.Button("Start Shock Diffusion", font=BUTTON_FONT, key="-START-", size=(20, 1),
-                         pad=((350, 350), (0, 0)), button_color="green", border_width=3)]]
+                         pad=((350, 350), (0, 0)), button_color="green", border_width=3, enable_events=True)]]
 
     scrollableLayout = [[sg.Column(layout, expand_x=True, expand_y=True, scrollable=True, vertical_scroll_only=True)]]
     return sg.Window('Shock Diffusion Tool', scrollableLayout, resizable=True, auto_size_buttons=False)
@@ -221,20 +247,36 @@ def changeLayoutAfterUpload(window, DATA):
     window['-PERCENT-'].update(visible=False)
     window["-MESSAGE-"].update(visible=True)
     window["-MESSAGE-"].update(DATA)
-    updatedCountries = func.getCountries(DATA)
-    updatedSectors = func.getSectors(DATA)
+    updatedCountries = func.produceCountries(DATA)
+    updatedSectors = func.produceSectors(DATA)
     window["-EX COUNTRIES-"].update(disabled=False, values=updatedCountries)
     window["-IM COUNTRIES-"].update(disabled=False, values=updatedCountries)
     window["-EX SECTORS-"].update(disabled=False, values=updatedSectors)
     window["-IM SECTORS-"].update(disabled=False, values=updatedSectors)
-    func.welcome()
+    window["-SRC SHK IM-"].update(disabled=False)
+    window["-SRC SHK EX-"].update(disabled=False)
+    window["-SHK SGN POS-"].update(disabled=False)
+    window["-SHK SGN NEG-"].update(disabled=False)
+    window["-SHK AMOUNT-"].update(disabled=False)
+    window["-SHK TO IG-"].update(disabled=False)
+    window["-SHK TO FD-"].update(disabled=False)
+    window["-SHK ITR-"].update(disabled=False)
+    window["-SHK THR-"].update(disabled=False)
+    window["-SCN IM OP1-"].update(disabled=False)
+    window["-SCN IM OP2-"].update(disabled=False)
+    window["-SCN IM OP3-"].update(disabled=False)
+    window["-SCN IM OP4-"].update(disabled=False)
+    window["-SCN EX OP1-"].update(disabled=False)
+    window["-SCN EX OP2-"].update(disabled=False)
+    window["-SCN EX OP3-"].update(disabled=False)
+    window["-SCN EX OP4-"].update(disabled=False)
 
 
 def main():
     window = makeWindow(sg.theme())
-    DATA = ''
-    outFileName = ''
-    outFilePath = ''
+    # DATA = ''
+    # outFileName = ''
+    # outFilePath = ''
     while True:
         # print("DATA::", DATA)
         event, values = window.read()
@@ -245,23 +287,107 @@ def main():
         if event == "-FILE-":
             DATA = values["-FILE-"]
             if DATA != '':
+                func.getInput(DATA)
                 changeLayoutAfterUpload(window, DATA)
 
-        if event == "-DEFAULT-":
+        elif event == "-DEFAULT-":
             DATA = "./Assets/ICIO2018_2015.CSV"
+            func.getInput(DATA)
             changeLayoutAfterUpload(window, DATA)
 
-        if event == "-OUT NAME-":
+        elif event == "-OUT NAME-":
             print("-OUT NAME-")
             outFileName = values["-OUT NAME-"]
+            func.getOutName(outFileName)
 
-        if event == "-OUT PATH-":
+        elif event == "-OUT PATH-":
             print("-OUT PATH-")
             outFilePath = values["-OUT PATH-"]
-            if outFileName != '' and outFilePath != '':
-                print("IN IF")
-                func.getResultFileAttr(outFileName, outFilePath)
+            func.getOutPath(outFilePath)
+            # if outFileName != '' and outFilePath != '':
+            #     print("IN IF")
+            #     func.getResultFileAttr(outFileName, outFilePath)
 
+        elif event == "-IM COUNTRIES-":
+            imCountry = values["-IM COUNTRIES-"]
+            func.getImCountry(imCountry)
+
+        elif event == "-IM SECTORS-":
+            imSector = values["-IM SECTORS-"]
+            func.getImSector(imSector)
+
+        elif event == "-EX COUNTRIES-":
+            exCountry = values["-EX COUNTRIES-"]
+            func.getExCountry(exCountry)
+
+        elif event == "-EX SECTORS-":
+            exSector = values["-EX SECTORS-"]
+            func.getExSector(exSector)
+
+        elif event == "-SRC SHK IM-" or event == "-SRC SHK EX-":
+            if values["-SRC SHK IM-"]:
+                func.getShockSrc("importer")
+            elif values["-SRC SHK EX-"]:
+                func.getShockSrc("exporter")
+
+        elif event == "-SHK SGN POS-" or event == "-SHK SGN NEG-":
+            if values["-SHK SGN POS-"]:
+                func.getShockSign("+")
+            elif values["-SHK SGN NEG-"]:
+                func.getShockSign("-")
+
+        elif event == "-SHK AMOUNT-":
+            amount = values["-SHK AMOUNT-"]
+            func.getShockAmount(amount)
+
+        elif event == "-SHK TO IG-" or event == "-SHK TO FD-":
+            if values["-SHK TO IG-"]:
+                func.getShockTo("intermediate goods")
+            elif values["-SHK TO FD-"]:
+                func.getShockTo("final demand")
+
+        elif event == "-SHK ITR-":
+            itr = values["-SHK ITR-"]
+            func.getShockIteration(itr)
+
+        elif event == "-SHK THR-":
+            thr = values["-SHK THR-"]
+            func.getShockThreshold(thr)
+
+        elif event == "-SCN IM OP1-" or event == "-SCN IM OP2-" or event == "-SCN IM OP3-" or event == "-SCN IM OP4-":
+            if values["-SCN IM OP1-"]:
+                func.getImScenario("option 1")
+            elif values["-SCN IM OP2-"]:
+                func.getImScenario("option 2")
+            elif values["-SCN IM OP3-"]:
+                func.getImScenario("option 3")
+            elif values["-SCN IM OP4-"]:
+                func.getImScenario("option 4")
+                window["-IM ALTER-"].update(disabled=False)
+
+        elif event == "-IM ALTER-":
+            imAltr = values["-IM ALTER-"]
+            func.getImAlternatives(imAltr)
+
+        elif event == "-SCN EX OP1-" or event == "-SCN EX OP2-" or event == "-SCN EX OP3-" or event == "-SCN EX OP4-":
+            if values["-SCN EX OP1-"]:
+                func.getExScenario("option 1")
+            elif values["-SCN EX OP2-"]:
+                func.getExScenario("option 2")
+            elif values["-SCN EX OP3-"]:
+                func.getExScenario("option 3")
+            elif values["-SCN EX OP4-"]:
+                func.getExScenario("option 4")
+                window["-EX ALTER-"].update(disabled=False)
+
+        elif event == "-EX ALTER-":
+            exAltr = values["-EX ALTER-"]
+            func.getExAlternatives(exAltr)
+
+        elif event == "-START-":
+            sg.popup(func.getStartMessage())
+
+    func.welcome()
     window.close()
     exit(0)
 
