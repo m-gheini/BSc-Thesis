@@ -10,11 +10,11 @@ SUB_FRAME_FONT = ("Arial Rounded MT Bold", 9)
 IM_SE_OP1 = "Based on the change of imports, production WOULD CHANGE; therefore, exports would change."
 IM_SE_OP2 = "Based on the change of imports, production WOULD NOT CHANGE; therefore, imports would change."
 IM_CO_OP1 = "The importer chooses the next best option as an alternative."
-IM_CO_OP2 = "The importer chooses the front list as an alternative"
+IM_CO_OP2 = "The importer chooses other countries/sectors as an alternative"
 EX_SE_OP1 = "Based on the change of exports, production WOULD CHANGE; therefore, imports would change."
 EX_SE_OP2 = "Based on the change of exports, production WOULD NOT CHANGE; therefore, exports would change."
 EX_CO_OP1 = "The exporter chooses the next best option as an alternative."
-EX_CO_OP2 = "The exporter chooses the front list as an alternative"
+EX_CO_OP2 = "The exporter chooses other countries/sectors as an alternative"
 
 listDict = {}
 # countries = ['AUS', 'AUT', 'BEL', 'CAN', 'CHL', 'CZE', 'DNK', 'EST', 'FIN', 'FRA', 'DEU', 'GRC', 'HUN', 'ISL', 'IRL',
@@ -91,7 +91,7 @@ def createImExporterPlacement():
                                     disabled=True, enable_events=True)]]
     importerFrameContent0 = sg.Column(importerCountryInfo)
     importerFrameContent = sg.Column(importerSectorInfo)
-    importerFrame = sg.Frame('Importer:', [[importerFrameContent0, importerFrameContent]], expand_x=True,
+    importerFrame = sg.Frame('Importer(Demander):', [[importerFrameContent0, importerFrameContent]], expand_x=True,
                              font=FRAME_NAME_FONT)
 
     exporterCountryInfo = [[sg.Text('Country', justification='left')],
@@ -102,7 +102,7 @@ def createImExporterPlacement():
                                     disabled=True, enable_events=True)]]
     exporterFrameContent0 = sg.Column(exporterCountryInfo)
     exporterFrameContent = sg.Column(exporterSectorInfo)
-    exporterFrame = sg.Frame('Exporter:', [[exporterFrameContent0, exporterFrameContent]], expand_x=True,
+    exporterFrame = sg.Frame('Exporter(Provider):', [[exporterFrameContent0, exporterFrameContent]], expand_x=True,
                              font=FRAME_NAME_FONT)
 
     imExporterPlace = sg.Column([[importerFrame, exporterFrame]], pad=(0, 0), expand_x=True)
@@ -163,10 +163,10 @@ def createScenarioPlacement():
                              enable_events=True)],
                    [sg.Radio(IM_CO_OP2, "RadioDemo3", disabled=True, key="-SCN IM OP4-",
                              enable_events=True), sg.Multiline('', disabled=True, key="-IM ALTER-",
-                                                               enable_events=True)]]
+                                                               enable_events=True, visible=False)]]
     imCom = sg.Column(imComLayout, expand_x=True)
     importerFrameContent = sg.Column([[imSideEf], [imCom]], expand_x=True)
-    importerScenarioFrame = sg.Frame("Scenario For Importer:", [[importerFrameContent]], expand_x=True,
+    importerScenarioFrame = sg.Frame("Scenario For Importer(Demander):", [[importerFrameContent]], expand_x=True,
                                      font=FRAME_NAME_FONT)
 
     exSideEfLayout = [[sg.T("Side Effects", font=SUB_FRAME_FONT)],
@@ -183,7 +183,7 @@ def createScenarioPlacement():
                                                                enable_events=True)]]
     exCom = sg.Column(exComLayout, expand_x=True)
     exporterFrameContent = sg.Column([[exSideEf], [exCom]])
-    exporterScenarioFrame = sg.Frame("Scenario For Exporter:", [[exporterFrameContent]], expand_x=True,
+    exporterScenarioFrame = sg.Frame("Scenario For Exporter(Provider):", [[exporterFrameContent]], expand_x=True,
                                      font=FRAME_NAME_FONT)
 
     scenarioPlace = sg.Column([[importerScenarioFrame], [exporterScenarioFrame]], pad=(0, 0), expand_x=True)
@@ -272,8 +272,79 @@ def changeLayoutAfterUpload(window, DATA):
     window["-SCN EX OP4-"].update(disabled=False)
 
 
+def optionFourLayout(DATA):
+    countries = func.produceCountries(DATA)
+    sectors = func.produceSectors(DATA)
+    # 1
+    countryOne = [[sg.Text('Country', justification='left')],
+                  [sg.Combo(countries, default_value='-Select-', key='-COUNTRY1-', size=(10, 1),
+                            disabled=False, enable_events=True)]]
+    sectorOne = [[sg.Text('Sector', justification='left')],
+                 [sg.Combo(sectors, default_value='-Select-', key='-SECTOR1-', size=(10, 1),
+                           disabled=False, enable_events=True)]]
+    percentageOne = [[sg.Text('Percentage', justification='left')],
+                     [sg.Input(key='-PERCENT1-', enable_events=True)]]
+    optionOne = [sg.Column(countryOne), sg.Column(sectorOne), sg.Column(percentageOne)]
+    # 2
+    countryTwo = [[sg.Combo(countries, default_value='-Select-', key='-COUNTRY2-', size=(10, 1),
+                            disabled=False, enable_events=True)]]
+    sectorTwo = [[sg.Combo(sectors, default_value='-Select-', key='-SECTOR2-', size=(10, 1),
+                           disabled=False, enable_events=True)]]
+    percentageTwo = [[sg.Input(key='-PERCENT2-', enable_events=True)]]
+    optionTwo = [sg.Column(countryTwo), sg.Column(sectorTwo), sg.Column(percentageTwo)]
+    # 3
+    countryThree = [[sg.Combo(countries, default_value='-Select-', key='-COUNTRY3-', size=(10, 1),
+                              disabled=False, enable_events=True)]]
+    sectorThree = [[sg.Combo(sectors, default_value='-Select-', key='-SECTOR3-', size=(10, 1),
+                             disabled=False, enable_events=True)]]
+    percentageThree = [[sg.Input(key='-PERCENT3-', enable_events=True)]]
+    optionThree = [sg.Column(countryThree), sg.Column(sectorThree), sg.Column(percentageThree)]
+    # 4
+    countryFour = [[sg.Combo(countries, default_value='-Select-', key='-COUNTRY4-', size=(10, 1),
+                             disabled=False, enable_events=True)]]
+    sectorFour = [[sg.Combo(sectors, default_value='-Select-', key='-SECTOR4-', size=(10, 1),
+                            disabled=False, enable_events=True)]]
+    percentageFour = [[sg.Input(key='-PERCENT4-', enable_events=True)]]
+    optionFour = [sg.Column(countryFour), sg.Column(sectorFour), sg.Column(percentageFour)]
+    layout = [optionOne, optionTwo, optionThree, optionFour]
+    return layout
+
+
+def getDataFromAlterWin(tradeType, event, values):
+    if event == '-COUNTRY1-':
+        func.getAlternatives(tradeType, "1", "Country", values['-COUNTRY1-'])
+    elif event == '-SECTOR1-':
+        func.getAlternatives(tradeType, "1", "Sector", values['-SECTOR1-'])
+    elif event == '-PERCENT1-':
+        print("IN PERCENT")
+        func.getAlternatives(tradeType, "1", "Percent", values['-PERCENT1-'])
+    elif event == '-COUNTRY2-':
+        func.getAlternatives(tradeType, "2", "Country", values['-COUNTRY2-'])
+    elif event == '-SECTOR2-':
+        func.getAlternatives(tradeType, "2", "Sector", values['-SECTOR2-'])
+    elif event == '-PERCENT2-':
+        func.getAlternatives(tradeType, "2", "Percent", values['-PERCENT2-'])
+    elif event == '-COUNTRY3-':
+        func.getAlternatives(tradeType, "3", "Country", values['-COUNTRY3-'])
+    elif event == '-SECTOR3-':
+        func.getAlternatives(tradeType, "3", "Sector", values['-SECTOR3-'])
+    elif event == '-PERCENT3-':
+        func.getAlternatives(tradeType, "3", "Percent", values['-PERCENT3-'])
+    elif event == '-COUNTRY4-':
+        func.getAlternatives(tradeType, "4", "Country", values['-COUNTRY4-'])
+    elif event == '-SECTOR4-':
+        func.getAlternatives(tradeType, "4", "Sector", values['-SECTOR4-'])
+    elif event == '-PERCENT4-':
+        func.getAlternatives(tradeType, "4", "Percent", values['-PERCENT4-'])
+
+
 def main():
+    global DATA
     window = makeWindow(sg.theme())
+    # layout2 = [[sg.Text('Window 2')],
+    #            [sg.Input('')],
+    #            [sg.Button('Read')]]
+
     # DATA = ''
     # outFileName = ''
     # outFilePath = ''
@@ -363,7 +434,16 @@ def main():
                 func.getImScenario("option 3")
             elif values["-SCN IM OP4-"]:
                 func.getImScenario("option 4")
-                window["-IM ALTER-"].update(disabled=False)
+                window2 = sg.Window('My new window', optionFourLayout(DATA), location=(800, 625),
+                                    return_keyboard_events=True)
+                while True:
+                    event2, values2 = window2.read()
+                    getDataFromAlterWin("Im", event2, values2)
+                    if event2 == sg.WIN_CLOSED:
+                        window2.close()
+                        window["-IM ALTER-"].update(func.changeDataFromWindowToStr("Im"))
+                        window["-IM ALTER-"].update(disabled=False, visible=True)
+                        break
 
         elif event == "-IM ALTER-":
             imAltr = values["-IM ALTER-"]

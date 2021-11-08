@@ -14,6 +14,8 @@ userInputDict = {"inputFile": "", "outputName": "", "outputPath": "", "imCountry
                  "exSector": "", "shockSrc": "", "shockSign": "", "shockAmount": "", "shockTo": "", "shockItr": "",
                  "shockThr": "", "imScenario": "", "exScenario": "", "imAlter": [], "exAlter": []}
 
+imAlternatives = {}
+
 
 def getInput(file):
     userInputDict["inputFile"] = file
@@ -67,6 +69,11 @@ def getShockThreshold(thr):
     userInputDict["shockThr"] = thr
 
 
+# getAlternatives("1", "Country", "AUS")
+# getAlternatives("1", "Sector", "T2910")
+# getAlternatives("1", "Percent", "50")
+# print(getImScenarioFromWindow())
+
 def getImScenario(imScn):
     userInputDict["imScenario"] = imScn
     if imScn != "option 4":
@@ -74,7 +81,27 @@ def getImScenario(imScn):
 
 
 def getImAlternatives(imAltr):
-    userInputDict["imAlter"] = [imAltr]
+    userInputDict["imAlter"] = imAltr
+
+
+def getAlternatives(tradingType, num, key, value):
+    if tradingType == "Im":
+        if num not in imAlternatives:
+            imAlternatives[num] = {key: value}
+        else:
+            # if key not in imAlternatives[num]:
+            imAlternatives[num][key] = value
+
+
+def changeDataFromWindowToStr(tradeType):
+    outStr = ""
+    if tradeType == "Im":
+        for key in imAlternatives:
+            outStr += imAlternatives[key]['Country'] + "_" + imAlternatives[key]["Sector"] + " : " + imAlternatives[key][
+                "Percent"] + ", "
+        outStr = outStr[:len(outStr) - 2]
+        userInputDict["imAlter"] = outStr
+    return outStr
 
 
 def getExScenario(exScn):
@@ -84,7 +111,7 @@ def getExScenario(exScn):
 
 
 def getExAlternatives(exAltr):
-    userInputDict["exAlter"] = [exAltr]
+    userInputDict["exAlter"] = exAltr
 
 
 def checkUserInput(dict):
@@ -158,3 +185,4 @@ def produceSectors(file):
 def welcome():
     print("HELLO!!")
     print(userInputDict)
+    print(imAlternatives)
