@@ -122,7 +122,8 @@ def createShockAttrPlacement():
                                        sg.Radio("--", "RadioDemo1", disabled=True, key="-SHK SGN NEG-",
                                                 enable_events=True),
                                        sg.Input(key="-SHK AMOUNT-", size=(10, 1), disabled=True,
-                                                enable_events=True)]],
+                                                enable_events=True),
+                                       sg.T("%")]],
                                      expand_x=True)
 
     shockToPlacement = sg.Column([[sg.Text('Shock To:'),
@@ -130,17 +131,26 @@ def createShockAttrPlacement():
                                             enable_events=True),
                                    sg.Radio("Final Demands", "RadioDemo2", disabled=True, key="-SHK TO FD-",
                                             enable_events=True)]], expand_x=True)
-
-    shockIterationPlacement = sg.Column(
-        [[sg.Text("Iteration Count:"), sg.Input(key="-SHK ITR-", size=(5, 1), disabled=True,
-                                                enable_events=True)]],
-        expand_x=True)
-
-    shockThresholdPlacement = sg.Column([[sg.Text("Threshold:"), sg.Input(key="-SHK THR-", size=(5, 1), disabled=True,
-                                                                          enable_events=True)]],
-                                        expand_x=True)
+    shockStopPlacement = sg.Column([[sg.Text('Stop At:'),
+                                     sg.Radio("Iteration Count", "RadioDemo5", disabled=True, key="-SHK STP ITR-",
+                                              enable_events=True),
+                                     sg.Input(key="-SHK ITR-", size=(5, 1), disabled=True,
+                                              enable_events=True, visible=False),
+                                     sg.Radio("Threshold", "RadioDemo5", disabled=True, key="-SHK STP THR-",
+                                              enable_events=True),
+                                     sg.Input(key="-SHK THR-", size=(5, 1), disabled=True,
+                                              enable_events=True, visible=False)
+                                     ]], expand_x=True)
+    # shockIterationPlacement = sg.Column(
+    #     [[sg.Text("Iteration Count:"), sg.Input(key="-SHK ITR-", size=(5, 1), disabled=True,
+    #                                             enable_events=True)]],
+    #     expand_x=True)
+    #
+    # shockThresholdPlacement = sg.Column([[sg.Text("Threshold:"), sg.Input(key="-SHK THR-", size=(5, 1), disabled=True,
+    #                                                                       enable_events=True)]],
+    #                                     expand_x=True)
     shockFrameContentLayout = [[shockSourcePlacement, space, shockAmountPlacement],
-                               [shockToPlacement, shockIterationPlacement, shockThresholdPlacement]]
+                               [shockToPlacement, shockStopPlacement]]
 
     shockFrameContent = [sg.Column(shockFrameContentLayout, expand_x=True)]
 
@@ -260,8 +270,8 @@ def changeLayoutAfterUpload(window, DATA):
     window["-SHK AMOUNT-"].update(disabled=False)
     window["-SHK TO IG-"].update(disabled=False)
     window["-SHK TO FD-"].update(disabled=False)
-    window["-SHK ITR-"].update(disabled=False)
-    window["-SHK THR-"].update(disabled=False)
+    window["-SHK STP ITR-"].update(disabled=False)
+    window["-SHK STP THR-"].update(disabled=False)
     window["-SCN IM OP1-"].update(disabled=False)
     window["-SCN IM OP2-"].update(disabled=False)
     window["-SCN IM OP3-"].update(disabled=False)
@@ -417,13 +427,23 @@ def main():
             elif values["-SHK TO FD-"]:
                 func.getShockTo("final demand")
 
+        elif event == "-SHK STP ITR-" or event == "-SHK STP THR-":
+            if values["-SHK STP ITR-"]:
+                window["-SHK THR-"].update(visible=False, disabled=True)
+                window["-SHK ITR-"].update(visible=True, disabled=False)
+            elif values["-SHK STP THR-"]:
+                window["-SHK ITR-"].update(visible=False, disabled=True)
+                window["-SHK THR-"].update(visible=True, disabled=False)
+
         elif event == "-SHK ITR-":
             itr = values["-SHK ITR-"]
             func.getShockIteration(itr)
+            func.getShockThreshold("NOT CHOSEN")
 
         elif event == "-SHK THR-":
             thr = values["-SHK THR-"]
             func.getShockThreshold(thr)
+            func.getShockIteration("NOT CHOSEN")
 
         elif event == "-SCN IM OP1-" or event == "-SCN IM OP2-" or event == "-SCN IM OP3-" or event == "-SCN IM OP4-":
             if values["-SCN IM OP1-"]:
