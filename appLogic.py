@@ -12,9 +12,10 @@ equivalentInApp = {"inputFile": "input-output table", "outputName": "Result File
 
 userInputDict = {"inputFile": "", "outputName": "", "outputPath": "", "imCountry": "", "imSector": "", "exCountry": "",
                  "exSector": "", "shockSrc": "", "shockSign": "", "shockAmount": "", "shockTo": "", "shockItr": "",
-                 "shockThr": "", "imScenario": "", "exScenario": "", "imAlter": [], "exAlter": []}
+                 "shockThr": "", "imScenario": "", "exScenario": "", "imAlter": "", "exAlter": ""}
 
 imAlternatives = {}
+exAlternatives = {}
 
 
 def getInput(file):
@@ -91,16 +92,28 @@ def getAlternatives(tradingType, num, key, value):
         else:
             # if key not in imAlternatives[num]:
             imAlternatives[num][key] = value
+    elif tradingType == "Ex":
+        if num not in exAlternatives:
+            exAlternatives[num] = {key: value}
+        else:
+            # if key not in imAlternatives[num]:
+            exAlternatives[num][key] = value
 
 
 def changeDataFromWindowToStr(tradeType):
     outStr = ""
     if tradeType == "Im":
         for key in imAlternatives:
-            outStr += imAlternatives[key]['Country'] + "_" + imAlternatives[key]["Sector"] + " : " + imAlternatives[key][
-                "Percent"] + ", "
+            outStr += imAlternatives[key]['Country'] + "_" + imAlternatives[key]["Sector"] + " : " + \
+                      imAlternatives[key]["Percent"] + ", "
         outStr = outStr[:len(outStr) - 2]
         userInputDict["imAlter"] = outStr
+    elif tradeType == "Ex":
+        for key in exAlternatives:
+            outStr += exAlternatives[key]['Country'] + "_" + exAlternatives[key]["Sector"] + " : " + \
+                      exAlternatives[key]["Percent"] + ", "
+        outStr = outStr[:len(outStr) - 2]
+        userInputDict["exAlter"] = outStr
     return outStr
 
 

@@ -180,7 +180,7 @@ def createScenarioPlacement():
                              enable_events=True)],
                    [sg.Radio(EX_CO_OP2, "RadioDemo4", disabled=True, key="-SCN EX OP4-",
                              enable_events=True), sg.Multiline('', disabled=True, key="-EX ALTER-",
-                                                               enable_events=True)]]
+                                                               enable_events=True, visible=False)]]
     exCom = sg.Column(exComLayout, expand_x=True)
     exporterFrameContent = sg.Column([[exSideEf], [exCom]])
     exporterScenarioFrame = sg.Frame("Scenario For Exporter(Provider):", [[exporterFrameContent]], expand_x=True,
@@ -458,7 +458,16 @@ def main():
                 func.getExScenario("option 3")
             elif values["-SCN EX OP4-"]:
                 func.getExScenario("option 4")
-                window["-EX ALTER-"].update(disabled=False)
+                window2 = sg.Window('My new window', optionFourLayout(DATA), location=(800, 625),
+                                    return_keyboard_events=True)
+                while True:
+                    event2, values2 = window2.read()
+                    getDataFromAlterWin("Ex", event2, values2)
+                    if event2 == sg.WIN_CLOSED:
+                        window2.close()
+                        window["-EX ALTER-"].update(func.changeDataFromWindowToStr("Ex"))
+                        window["-EX ALTER-"].update(disabled=False, visible=True)
+                        break
 
         elif event == "-EX ALTER-":
             exAltr = values["-EX ALTER-"]
