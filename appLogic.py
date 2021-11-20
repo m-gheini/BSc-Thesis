@@ -1,4 +1,5 @@
 import os
+import backLogic as func
 
 countriesSectorsDict = {}
 
@@ -78,7 +79,7 @@ def getShockThreshold(thr):
 def getImScenario(imScn):
     userInputDict["imScenario"] = imScn
     if imScn != "option 4":
-        userInputDict["imAlter"].append("NONE")
+        userInputDict["imAlter"] = "NONE"
 
 
 def getImAlternatives(imAltr):
@@ -120,7 +121,7 @@ def changeDataFromWindowToStr(tradeType):
 def getExScenario(exScn):
     userInputDict["exScenario"] = exScn
     if exScn != "option 4":
-        userInputDict["exAlter"].append("NONE")
+        userInputDict["exAlter"] = "NONE"
 
 
 def getExAlternatives(exAltr):
@@ -139,6 +140,7 @@ def getStartMessage():
     empties = checkUserInput(userInputDict)
     message = "Attention!!\n\n"
     if not empties:
+        func.main(userInputDict)
         return "Successful"
     for name in empties:
         message += "\"" + equivalentInApp[name] + "\" is empty.\n\n"
@@ -198,4 +200,3 @@ def produceSectors(file):
 def welcome():
     print("HELLO!!")
     print(userInputDict)
-    print(imAlternatives)
