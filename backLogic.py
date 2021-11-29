@@ -59,11 +59,19 @@ def getImExAdjacency(dataframe):
 
 def prepareNetworkUsingLibrary(dataframe):
     network = nx.DiGraph()
-    for i in range(1, len(getFirstColumn(dataframe)) - 2):
-        for j in range(1, len(getFirstRow(dataframe))):
-            if dataframe[i][j] != 0:
-                network.add_edge(dataframe[i][0], dataframe[0][j], weight=dataframe[i][j])
+    for i in range(1, len(getFirstRow(dataframe))):
+        for j in range(1, len(getFirstColumn(dataframe))-2):
+            if float(dataframe[i][j]) != 0:
+                network.add_edge(dataframe[i][0], dataframe[0][j], weight=float(dataframe[i][j]))
     return network
+
+
+def getProvidersForSector(graph, node):
+    return list(graph.successors(node))
+
+
+def getDemandersFromSector(graph, node):
+    return list(graph.predecessors(node))
 
 
 def main(data):
