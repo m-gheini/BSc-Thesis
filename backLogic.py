@@ -14,18 +14,18 @@ def readData(inFile):
     return inDataframe
 
 
-def getFirstRow(dataframe):
+def getFirstColumn(dataframe):
     return dataframe[0]
 
 
-def getFirstColumn(dataframe):
+def getFirstRow(dataframe):
     col = dataframe.iloc[:1, :]
     col = col.transpose()
     return col[0]
 
 
 def getRowNumOfFirstTax(dataframe):
-    r = getFirstRow(dataframe)
+    r = getFirstColumn(dataframe)
     i = -1
     for row in r:
         i += 1
@@ -36,7 +36,7 @@ def getRowNumOfFirstTax(dataframe):
 
 
 def getColNumOfFinalDemand(dataframe):
-    c = getFirstColumn(dataframe)
+    c = getFirstRow(dataframe)
     j = -1
     for column in c:
         j += 1
@@ -50,8 +50,9 @@ def getImExAdjacency(dataframe):
     row = getRowNumOfFirstTax(dataframe)
     col = getColNumOfFinalDemand(dataframe)
     adjacencyDF = dataframe.iloc[:row, :col]
-    twoLastRow = dataframe.iloc[len(getFirstRow(dataframe))-2:, :col]
+    twoLastRow = dataframe.iloc[len(getFirstColumn(dataframe))-2:, :col]
     adjacencyDF = adjacencyDF.append(twoLastRow)
+    adjacencyDF.index = range(adjacencyDF.shape[0])
     return adjacencyDF
 
 
@@ -60,6 +61,7 @@ def main(data):
     print("IN BACK")
     df = readData(infoDict["inputFile"])
     adjacencyDF = getImExAdjacency(df)
+    print(adjacencyDF)
 
 
 main(infoDict)
