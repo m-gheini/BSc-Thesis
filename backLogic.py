@@ -1,5 +1,6 @@
 import os
 import pandas as pd
+import networkx as nx
 
 infoDict = {'inputFile': './Assets/ICIO2018_2015.CSV', 'outputName': 'res', 'outputPath': 'C:/', 'imCountry': 'CAN',
             'imSector': '07T08', 'exCountry': 'BEL', 'exSector': '09', 'shockSrc': 'importer', 'shockSign': '-',
@@ -50,10 +51,19 @@ def getImExAdjacency(dataframe):
     row = getRowNumOfFirstTax(dataframe)
     col = getColNumOfFinalDemand(dataframe)
     adjacencyDF = dataframe.iloc[:row, :col]
-    twoLastRow = dataframe.iloc[len(getFirstColumn(dataframe))-2:, :col]
+    twoLastRow = dataframe.iloc[len(getFirstColumn(dataframe)) - 2:, :col]
     adjacencyDF = adjacencyDF.append(twoLastRow)
     adjacencyDF.index = range(adjacencyDF.shape[0])
     return adjacencyDF
+
+
+def prepareNetworkUsingLibrary(dataframe):
+    network = nx.DiGraph()
+    for i in range(1, len(getFirstColumn(dataframe)) - 2):
+        for j in range(1, len(getFirstRow(dataframe))):
+            if dataframe[i][j] != 0:
+                network.add_edge(dataframe[i][0], dataframe[0][j], weight=dataframe[i][j])
+    return network
 
 
 def main(data):
@@ -61,7 +71,8 @@ def main(data):
     print("IN BACK")
     df = readData(infoDict["inputFile"])
     adjacencyDF = getImExAdjacency(df)
-    print(adjacencyDF)
+    network = prepareNetworkUsingLibrary(adjacencyDF)
+    print(len(list(network.edges)))
 
 
 main(infoDict)
