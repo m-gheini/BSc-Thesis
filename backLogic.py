@@ -1,6 +1,7 @@
 import os
 import pandas as pd
 import networkx as nx
+from shocks import Shock
 
 infoDict = {'inputFile': './Assets/ICIO2018_2015.CSV', 'outputName': 'res', 'outputPath': 'C:/', 'imCountry': 'CAN',
             'imSector': '07T08', 'exCountry': 'BEL', 'exSector': '09', 'shockSrc': 'importer', 'shockSign': '-',
@@ -80,6 +81,15 @@ def updateEdgeWeight(graph, edge, newWeight):
     return graph
 
 
+def prepareName(country, sector):
+    return country + "_" + sector
+
+
+def makeShockObject(origin, destination, amount, sign, iteration):
+    shock = Shock(origin, destination, amount, sign, iteration)
+    return shock
+
+
 def main(data):
     infoDict = data
     print("IN BACK")
@@ -87,6 +97,13 @@ def main(data):
     adjacencyDF = getImExAdjacency(df)
     network = prepareNetworkUsingLibrary(adjacencyDF)
     print(len(list(network.edges)))
+    if infoDict["shockSrc"] == "importer":
+        origin = prepareName(infoDict["imCountry"], infoDict["imSector"])
+        destination = prepareName(infoDict["exCountry"], infoDict["exSector"])
+    elif infoDict["shockSrc"] == "exporter":
+        origin = prepareName(infoDict["exCountry"], infoDict["exSector"])
+        destination = prepareName(infoDict["imCountry"], infoDict["imSector"])
+    makeShockObject(origin, destination, infoDict["shockAmount"], infoDict["shockSign"], 1)
 
 
 main(infoDict)
