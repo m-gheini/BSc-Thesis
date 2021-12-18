@@ -2,6 +2,7 @@ import os
 import pandas as pd
 import networkx as nx
 from shocks import Shock
+from shockManager import ShockManager
 
 infoDict = {'inputFile': './Assets/ICIO2018_2015.CSV', 'outputName': 'res', 'outputPath': 'C:/', 'imCountry': 'CAN',
             'imSector': '07T08', 'exCountry': 'BEL', 'exSector': '09', 'shockSrc': 'importer', 'shockSign': '-',
@@ -91,6 +92,8 @@ def makeShockObject(origin, destination, amount, sign, iteration):
 
 
 def main(data):
+    origin = destination = ""
+    itr = thr = -1
     infoDict = data
     print("IN BACK")
     df = readData(infoDict["inputFile"])
@@ -104,6 +107,11 @@ def main(data):
         origin = prepareName(infoDict["exCountry"], infoDict["exSector"])
         destination = prepareName(infoDict["imCountry"], infoDict["imSector"])
     makeShockObject(origin, destination, infoDict["shockAmount"], infoDict["shockSign"], 1)
+    if infoDict["shockItr"] == "NOT CHOSEN":
+        thr = int(infoDict["shockThr"])
+    elif infoDict["shockThr"] == "NOT CHOSEN":
+        itr = int(infoDict["shockItr"])
+    ShockManager(network, itr, thr)
 
 
 main(infoDict)
