@@ -5,7 +5,7 @@ from shocks import Shock
 from network import Network
 from shockManager import ShockManager
 
-info = {'inputFile': './Assets/ICIO2018_2015.CSV', 'outputName': 'res', 'outputPath': 'C:/', 'imCountry': 'CAN',
+info = {'inputFile': './Assets/data.CSV', 'outputName': 'res', 'outputPath': 'C:/', 'imCountry': 'CAN',
             'imSector': '07T08', 'exCountry': 'BEL', 'exSector': '09', 'shockSrc': 'importer', 'shockSign': '-',
             'shockAmount': '4', 'shockTo': 'intermediate goods', 'shockItr': '11', 'shockThr': 'NOT CHOSEN',
             'imScenario': 'option 1', 'exScenario': 'option 4', 'imAlter': 'NONE', 'exAlter': 'EST_19 : 100'}
@@ -71,6 +71,7 @@ def getAddedValue(dataframe):
     addedValue = addedValue.astype(float)
     return addedValue
 
+
 # def getImExAdjacency(dataframe):
 #     row = getRowNumOfFirstTax(dataframe)
 #     col = getColNumOfFinalDemand(dataframe)
@@ -120,11 +121,12 @@ def main(data):
     print("IN BACK")
     df = readData(infoDict["inputFile"])
     Z = getZ(df)
+    print(Z)
     X = getX(df)
-    header = list(getFirstRow(Z))[1:]
+    header = list(getFirstRow(df))[1:Z.shape[0]+1]
     network = Network(Z, X, header)
-    print(network.Header)
-    Z.div(X.iloc[0] + 0.000000001)
+    print(network.A)
+
     # adjacencyDF = getImExAdjacency(df)
     # network = prepareNetworkUsingLibrary(adjacencyDF)
     # print(len(list(network.edges)))

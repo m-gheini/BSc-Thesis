@@ -1,10 +1,12 @@
+from utility import getTechnicalCoefficients
+
 class Network:
     def __init__(self, Z, X, Header):
 
         self.Z = Z
         self.X = X
         self.Header = Header
-        # self.A0 = getLeontiefCoefficients(self.A, self.X)
+        self.A = getTechnicalCoefficients(self.Z, self.X)
         # self.A_Inverse = getLeontiefInverseMatrix(self.A0)
         # self.graph = {}
         # self.internalQueue = dict()
