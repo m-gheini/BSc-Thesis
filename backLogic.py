@@ -3,6 +3,7 @@ import pandas as pd
 import networkx as nx
 from shocks import Shock
 from network import Network
+from network import Sectors
 from shockManager import ShockManager
 
 info = {'inputFile': './Assets/data.CSV', 'outputName': 'res', 'outputPath': 'C:/', 'imCountry': 'CAN',
@@ -55,6 +56,7 @@ def getZ(dataframe):
     col = getColNumOfFinalDemand(dataframe)
     z = dataframe.iloc[1:row, 1:col]
     z = z.astype(float)
+    # z.index = range(z.shape[0])
     return z
 
 
@@ -62,6 +64,7 @@ def getX(dataframe):
     col = getColNumOfFinalDemand(dataframe)
     x = dataframe.iloc[len(getFirstColumn(dataframe)) - 1:, 1:col]
     x = x.astype(float)
+    # x.index = range(x.shape[0])
     return x
 
 
@@ -123,9 +126,18 @@ def main(data):
     Z = getZ(df)
     print(Z)
     X = getX(df)
+    print(X)
     header = list(getFirstRow(df))[1:Z.shape[0]+1]
     network = Network(Z, X, header)
-    print(network.A)
+    # print(network.Z)
+    # for i, name in enumerate(network.Header, start=1):
+    #     for j, _ in enumerate(network.Header, start=1):
+    #         print(i, "-", name, "-", j, "-", network.Z.loc[i][j])
+    # print(network.Z.loc[0][3])
+    # print(getColNumOfFinalDemand(df))
+    network.showNetwork()
+    for s in Sectors.sectorsList:
+        print(s)
 
     # adjacencyDF = getImExAdjacency(df)
     # network = prepareNetworkUsingLibrary(adjacencyDF)
