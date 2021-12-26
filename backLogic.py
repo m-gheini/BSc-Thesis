@@ -4,6 +4,7 @@ import networkx as nx
 from shocks import Shock
 from network import Network
 from network import Sectors
+from network import Edges
 from shockManager import ShockManager
 
 info = {'inputFile': './Assets/data.CSV', 'outputName': 'res', 'outputPath': 'C:/', 'imCountry': 'CAN',
@@ -135,9 +136,12 @@ def main(data):
     #         print(i, "-", name, "-", j, "-", network.Z.loc[i][j])
     # print(network.Z.loc[0][3])
     # print(getColNumOfFinalDemand(df))
+    # network.updateEdgeWeight("K_0", "K_0", 100)
     network.showNetwork()
     for s in Sectors.sectorsList:
         print(s)
+    for e in Edges.edgesList:
+        print(e)
 
     # adjacencyDF = getImExAdjacency(df)
     # network = prepareNetworkUsingLibrary(adjacencyDF)
