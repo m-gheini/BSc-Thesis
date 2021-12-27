@@ -1,16 +1,16 @@
 import os
 import pandas as pd
 import networkx as nx
-from shocks import Shock
 from network import Network
 from network import Sectors
 from network import Edges
-from shockManager import ShockManager
+from shocks import Shock
+from shocks import ShockManager
 
-info = {'inputFile': './Assets/data.CSV', 'outputName': 'res', 'outputPath': 'C:/', 'imCountry': 'CAN',
-            'imSector': '07T08', 'exCountry': 'BEL', 'exSector': '09', 'shockSrc': 'importer', 'shockSign': '-',
-            'shockAmount': '4', 'shockTo': 'intermediate goods', 'shockItr': '11', 'shockThr': 'NOT CHOSEN',
-            'imScenario': 'option 1', 'exScenario': 'option 4', 'imAlter': 'NONE', 'exAlter': 'EST_19 : 100'}
+info = {'inputFile': './Assets/data.CSV', 'outputName': 'res', 'outputPath': 'C:/', 'imCountry': 'M',
+        'imSector': '0', 'exCountry': 'K', 'exSector': '0', 'shockSrc': 'importer', 'shockSign': '-',
+        'shockAmount': '40', 'shockTo': 'intermediate goods', 'shockItr': '11', 'shockThr': 'NOT CHOSEN',
+        'imScenario': 'option 1', 'exScenario': 'option 4', 'imAlter': 'NONE', 'exAlter': 'EST_19 : 100'}
 
 
 # infoDict = {}
@@ -76,46 +76,13 @@ def getAddedValue(dataframe):
     return addedValue
 
 
-# def getImExAdjacency(dataframe):
-#     row = getRowNumOfFirstTax(dataframe)
-#     col = getColNumOfFinalDemand(dataframe)
-#     adjacencyDF = dataframe.iloc[:row, :col]
-#     twoLastRow = dataframe.iloc[len(getFirstColumn(dataframe)) - 2:, :col]
-#     adjacencyDF = adjacencyDF.append(twoLastRow)
-#     adjacencyDF.index = range(adjacencyDF.shape[0])
-#     return adjacencyDF
+def prepareName(country, sector):
+    return country + "_" + sector
 
 
-# def prepareNetworkUsingLibrary(dataframe):
-#     network = nx.DiGraph()
-#     for i in range(1, len(getFirstRow(dataframe))):
-#         for j in range(1, len(getFirstColumn(dataframe)) - 2):
-#             if float(dataframe[i][j]) != 0:
-#                 network.add_edge(dataframe[i][0], dataframe[0][j], weight=float(dataframe[i][j]))
-#     return network
-#
-#
-# def getProvidersForSector(graph, node):
-#     return list(graph.successors(node))
-#
-#
-# def getDemandersFromSector(graph, node):
-#     return list(graph.predecessors(node))
-#
-#
-# def updateEdgeWeight(graph, edge, newWeight):
-#     demander, provider = edge
-#     graph[demander][provider]["weight"] = newWeight
-#     return graph
-#
-#
-# def prepareName(country, sector):
-#     return country + "_" + sector
-#
-#
-# def makeShockObject(origin, destination, amount, sign, iteration):
-#     shock = Shock(origin, destination, amount, sign, iteration)
-#     return shock
+def makeShockObject(origin, destination, amount, sign, iteration):
+    shock = Shock(origin, destination, amount, sign, iteration)
+    return shock
 
 
 def main(data):
@@ -128,7 +95,7 @@ def main(data):
     print(Z)
     X = getX(df)
     print(X)
-    header = list(getFirstRow(df))[1:Z.shape[0]+1]
+    header = list(getFirstRow(df))[1:Z.shape[0] + 1]
     network = Network(Z, X, header)
     # print(network.Z)
     # for i, name in enumerate(network.Header, start=1):
@@ -143,21 +110,20 @@ def main(data):
     for e in Edges.edgesList:
         print(e)
 
-    # adjacencyDF = getImExAdjacency(df)
-    # network = prepareNetworkUsingLibrary(adjacencyDF)
-    # print(len(list(network.edges)))
-    # if infoDict["shockSrc"] == "importer":
-    #     origin = prepareName(infoDict["imCountry"], infoDict["imSector"])
-    #     destination = prepareName(infoDict["exCountry"], infoDict["exSector"])
-    # elif infoDict["shockSrc"] == "exporter":
-    #     origin = prepareName(infoDict["exCountry"], infoDict["exSector"])
-    #     destination = prepareName(infoDict["imCountry"], infoDict["imSector"])
-    # makeShockObject(origin, destination, infoDict["shockAmount"], infoDict["shockSign"], 1)
-    # if infoDict["shockItr"] == "NOT CHOSEN":
-    #     thr = int(infoDict["shockThr"])
-    # elif infoDict["shockThr"] == "NOT CHOSEN":
-    #     itr = int(infoDict["shockItr"])
-    # ShockManager(network, thr, itr)
+    if infoDict["shockSrc"] == "importer":
+        origin = prepareName(infoDict["imCountry"], infoDict["imSector"])
+        destination = prepareName(infoDict["exCountry"], infoDict["exSector"])
+    elif infoDict["shockSrc"] == "exporter":
+        origin = prepareName(infoDict["exCountry"], infoDict["exSector"])
+        destination = prepareName(infoDict["imCountry"], infoDict["imSector"])
+    makeShockObject(origin, destination, infoDict["shockAmount"], infoDict["shockSign"], 1)
+    if infoDict["shockItr"] == "NOT CHOSEN":
+        thr = int(infoDict["shockThr"])
+    elif infoDict["shockThr"] == "NOT CHOSEN":
+        itr = int(infoDict["shockItr"])
+    ShockManager(network, thr, itr)
+    for s in Shock.shocksList:
+        print(s)
 
 
 main(info)
