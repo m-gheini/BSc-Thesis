@@ -59,15 +59,15 @@ class Network:
     def generateStructure(self):
         net = nx.DiGraph()
         for i, demander in enumerate(self.Header, start=1):
-            print(i, demander)
+            # print(i, demander)
             newSector = Sectors(i, demander)
             # providesTo = []
             # demandsFrom = []
             for j, provider in enumerate(self.Header, start=1):
-                print(j)
-                print(demander, "-", provider, "-", self.Z[i][j])
+                # print(j)
+                # print(demander, "-", provider, "-", self.Z[i][j])
                 if float(self.Z[i][j]) != 0.0:
-                    print("Y", self.Z[i][j])
+                    # print("Y", self.Z[i][j])
                     net.add_edge(demander, provider, weight=float(self.Z[i][j]))
         for sector in Sectors.sectorsList:
             sector.demandsFrom = list(net.successors(sector.name))
@@ -93,13 +93,29 @@ class Network:
             self.network.add_edge(demander, provider, weight=newWeight)
             newEdge = Edges((demander, provider), newWeight)
             for sector in Sectors.sectorsList:
-                print("IN FOR")
+                # print("IN FOR")
                 i = 0
                 if sector.name == demander:
-                    i+=1
+                    i += 1
                     sector.demandsFrom.append(provider)
                 if sector.name == provider:
-                    i+=1
+                    i += 1
                     sector.providesTo.append(demander)
                 if i == 2:
                     break
+
+    def getDemandsFrom(self, sector):
+        return list(self.network.successors(sector))
+
+    def getProvideTo(self, sector):
+        return list(self.network.predecessors(sector))
+
+    def getIndex(self, sectorName):
+        index = 0
+        for i, name in enumerate(self.Header, start=1):
+            if name == sectorName:
+                index = i
+                break
+        if index > 0:
+            return index
+        raise Exception("Index Not Found in Header Names")

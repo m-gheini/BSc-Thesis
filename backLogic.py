@@ -7,9 +7,9 @@ from network import Edges
 from shocks import Shock
 from shocks import ShockManager
 
-info = {'inputFile': './Assets/data.CSV', 'outputName': 'res', 'outputPath': 'C:/', 'imCountry': 'M',
-        'imSector': '0', 'exCountry': 'K', 'exSector': '0', 'shockSrc': 'importer', 'shockSign': '-',
-        'shockAmount': '40', 'shockTo': 'intermediate goods', 'shockItr': '11', 'shockThr': 'NOT CHOSEN',
+info = {'inputFile': './Assets/data.CSV', 'outputName': 'res', 'outputPath': 'C:/', 'imCountry': 'L',
+        'imSector': '0', 'exCountry': 'K', 'exSector': '0', 'shockSrc': 'importer', 'shockSign': '+',
+        'shockAmount': '20', 'shockTo': 'intermediate goods', 'shockItr': '11', 'shockThr': 'NOT CHOSEN',
         'imScenario': 'option 1', 'exScenario': 'option 4', 'imAlter': 'NONE', 'exAlter': 'EST_19 : 100'}
 
 
@@ -105,25 +105,34 @@ def main(data):
     # print(getColNumOfFinalDemand(df))
     # network.updateEdgeWeight("K_0", "K_0", 100)
     network.showNetwork()
-    for s in Sectors.sectorsList:
-        print(s)
-    for e in Edges.edgesList:
-        print(e)
+    print(network.A)
+    # for s in Sectors.sectorsList:
+    #     print(s)
+    # for e in Edges.edgesList:
+    #     print(e)
 
-    if infoDict["shockSrc"] == "importer":
-        origin = prepareName(infoDict["imCountry"], infoDict["imSector"])
-        destination = prepareName(infoDict["exCountry"], infoDict["exSector"])
-    elif infoDict["shockSrc"] == "exporter":
-        origin = prepareName(infoDict["exCountry"], infoDict["exSector"])
-        destination = prepareName(infoDict["imCountry"], infoDict["imSector"])
-    makeShockObject(origin, destination, infoDict["shockAmount"], infoDict["shockSign"], 1)
-    if infoDict["shockItr"] == "NOT CHOSEN":
-        thr = int(infoDict["shockThr"])
-    elif infoDict["shockThr"] == "NOT CHOSEN":
-        itr = int(infoDict["shockItr"])
-    ShockManager(network, thr, itr)
-    for s in Shock.shocksList:
-        print(s)
+    # if infoDict["shockSrc"] == "importer":
+    #     origin = prepareName(infoDict["imCountry"], infoDict["imSector"])
+    #     destination = prepareName(infoDict["exCountry"], infoDict["exSector"])
+    # elif infoDict["shockSrc"] == "exporter":
+    #     origin = prepareName(infoDict["exCountry"], infoDict["exSector"])
+    #     destination = prepareName(infoDict["imCountry"], infoDict["imSector"])
+    # makeShockObject(origin, destination, infoDict["shockAmount"], infoDict["shockSign"], 1)
+    # if infoDict["shockItr"] == "NOT CHOSEN":
+    #     thr = int(infoDict["shockThr"])
+    # elif infoDict["shockThr"] == "NOT CHOSEN":
+    #     itr = int(infoDict["shockItr"])
+    # ShockManager(network, thr, itr)
+    # for s in Shock.shocksList:
+    #     print(s)
+    firstShock = Shock("L_0", "K_0", "1000", "+", 1)
+    secondShock = Shock("L_0", "M_0", "1000", "+", 1)
+    shockManager = ShockManager(network, thr, 10)
+    shockManager.addShock(firstShock)
+    shockManager.addShock(secondShock)
+    shockManager.applyShocks()
+    shockManager.processShocks()
+    shockManager.print()
 
 
 main(info)
