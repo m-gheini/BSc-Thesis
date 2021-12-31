@@ -7,13 +7,13 @@ from network import Edges
 from shocks import Shock
 from shocks import ShockManager
 
-info = {'inputFile': './Assets/data.CSV', 'outputName': 'res', 'outputPath': 'C:/', 'imCountry': 'L',
-        'imSector': '0', 'exCountry': 'K', 'exSector': '0', 'shockSrc': 'importer', 'shockSign': '+',
-        'shockAmount': '20', 'shockTo': 'intermediate goods', 'shockItr': '11', 'shockThr': 'NOT CHOSEN',
-        'imScenario': 'option 1', 'exScenario': 'option 4', 'imAlter': 'NONE', 'exAlter': 'EST_19 : 100'}
+# info = {'inputFile': './Assets/data.CSV', 'outputName': 'res', 'outputPath': 'C:/', 'imCountry': 'L',
+#         'imSector': '0', 'exCountry': 'K', 'exSector': '0', 'shockSrc': 'importer', 'shockSign': '+',
+#         'shockAmount': '20', 'shockTo': 'intermediate goods', 'shockItr': '11', 'shockThr': 'NOT CHOSEN',
+#         'imScenario': 'option 1', 'exScenario': 'option 4', 'imAlter': 'NONE', 'exAlter': 'EST_19 : 100'}
 
 
-# infoDict = {}
+infoDict = {}
 
 def readData(inFile):
     inDataframe = pd.read_csv(inFile, header=None, sep=',', engine='python')
@@ -135,4 +135,4 @@ def main(data):
     shockManager.print()
 
 
-main(info)
+# main(info)

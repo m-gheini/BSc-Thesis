@@ -372,7 +372,7 @@ def main():
                 changeLayoutAfterUpload(window, DATA)
 
         elif event == "-DEFAULT-":
-            DATA = "./Assets/ICIO2018_2015.CSV"
+            DATA = "./Assets/data.CSV"
             func.getInput(DATA)
             changeLayoutAfterUpload(window, DATA)
 

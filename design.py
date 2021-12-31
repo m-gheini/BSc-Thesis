@@ -174,7 +174,7 @@ def main():
             window["-DEFAULT-"].update(visible=True)
 
         if event == "-DEFAULT-":
-            DATA = "Assets/ICIO2018_2015.CSV"
+            DATA = "Assets/data.CSV"
             window["-UPLOAD ICON-"].update(visible=False)
             window["-CHOOSE-"].update(visible=False)
             window["-DEFAULT-"].update(visible=False)
