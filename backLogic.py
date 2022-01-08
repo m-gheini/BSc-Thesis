@@ -128,14 +128,14 @@ def main(data):
     # ShockManager(network, thr, itr)
     # for s in Shock.shocksList:
     #     print(s)
-    firstShock = Shock("L_0", "K_0", "1000", "+", 1)
+    firstShock = Shock("CHN_26", "USA_26", "100", "-", 1)
     # secondShock = Shock("L_0", "M_0", "1000", "+", 1)
     shockManager = ShockManager(network, thr, 10)
     shockManager.addShock(firstShock)
-    shockManager.addShock(secondShock)
+    # shockManager.addShock(secondShock)
     shockManager.applyShocks()
     shockManager.processShocks()
     shockManager.print()
 
 
-# main(info)
+main(info)

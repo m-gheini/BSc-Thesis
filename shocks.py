@@ -27,12 +27,12 @@ class ShockManager:
         self.processQueue = dict()
 
     def addShock(self, shock):
-        print("addShock...")
+        # print("addShock...")
         self.shockQueue.append(shock)
-        print(shock)
+        # print(shock)
 
     def applyShock(self, shock):
-        print("applyShock...")
+        # print("applyShock...")
         if not self.processQueue.get(shock.iteration):
             self.processQueue[shock.iteration] = dict()
         if shock.amount != 0:
@@ -45,22 +45,22 @@ class ShockManager:
                     self.processQueue[shock.iteration][shock.target] = shockNewAmount
                 else:
                     self.processQueue[shock.iteration][shock.target] += shockNewAmount
-        print(self.processQueue)
+        # print(self.processQueue)
 
     def applyShocks(self):
-        print("applyShocks...")
+        # print("applyShocks...")
         while len(self.shockQueue) > 0:
             shock = self.shockQueue.pop()
             self.applyShock(shock)
 
     def processShocks(self):
-        print("processShocks...")
+        # print("processShocks...")
         while self.currentIteration < self.maxIteration:
             # logger.
             self.print()
             for lastTarget in self.processQueue[self.currentIteration]:
                 origin = lastTarget
-                print("LAST::",lastTarget, "IS::" ,self.network.getDemandsFrom(lastTarget))
+                # print("LAST::",lastTarget, "IS::" ,self.network.getDemandsFrom(lastTarget))
                 targets = self.network.getDemandsFrom(lastTarget)
                 val = self.processQueue[self.currentIteration][lastTarget]
                 sign = "+"
