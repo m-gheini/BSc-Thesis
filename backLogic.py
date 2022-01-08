@@ -7,13 +7,13 @@ from network import Edges
 from shocks import Shock
 from shocks import ShockManager
 
-# info = {'inputFile': './Assets/data.CSV', 'outputName': 'res', 'outputPath': 'C:/', 'imCountry': 'L',
-#         'imSector': '0', 'exCountry': 'K', 'exSector': '0', 'shockSrc': 'importer', 'shockSign': '+',
-#         'shockAmount': '20', 'shockTo': 'intermediate goods', 'shockItr': '11', 'shockThr': 'NOT CHOSEN',
-#         'imScenario': 'option 1', 'exScenario': 'option 4', 'imAlter': 'NONE', 'exAlter': 'EST_19 : 100'}
+info = {'inputFile': './Assets/I_2015.CSV', 'outputName': 'res', 'outputPath': 'C:/', 'imCountry': 'L',
+        'imSector': '0', 'exCountry': 'K', 'exSector': '0', 'shockSrc': 'importer', 'shockSign': '+',
+        'shockAmount': '20', 'shockTo': 'intermediate goods', 'shockItr': '11', 'shockThr': 'NOT CHOSEN',
+        'imScenario': 'option 1', 'exScenario': 'option 4', 'imAlter': 'NONE', 'exAlter': 'EST_19 : 100'}
 
 
-infoDict = {}
+#infoDict = {}
 
 def readData(inFile):
     inDataframe = pd.read_csv(inFile, header=None, sep=',', engine='python')
@@ -37,9 +37,11 @@ def getRowNumOfFirstTax(dataframe):
         i += 1
         if i == 0:
             continue
+        if row == "0":
+            return i
         if row.split('_')[1] == "TAXSUB":
             return i
-
+    return i
 
 def getColNumOfFinalDemand(dataframe):
     c = getFirstRow(dataframe)
@@ -50,6 +52,7 @@ def getColNumOfFinalDemand(dataframe):
             continue
         if column.split('_')[1] == 'HFCE':
             return j
+    return j+1
 
 
 def getZ(dataframe):
@@ -104,7 +107,7 @@ def main(data):
     # print(network.Z.loc[0][3])
     # print(getColNumOfFinalDemand(df))
     # network.updateEdgeWeight("K_0", "K_0", 100)
-    network.showNetwork()
+    # network.showNetwork()
     print(network.A)
     # for s in Sectors.sectorsList:
     #     print(s)
@@ -126,7 +129,7 @@ def main(data):
     # for s in Shock.shocksList:
     #     print(s)
     firstShock = Shock("L_0", "K_0", "1000", "+", 1)
-    secondShock = Shock("L_0", "M_0", "1000", "+", 1)
+    # secondShock = Shock("L_0", "M_0", "1000", "+", 1)
     shockManager = ShockManager(network, thr, 10)
     shockManager.addShock(firstShock)
     shockManager.addShock(secondShock)

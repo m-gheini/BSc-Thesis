@@ -70,8 +70,10 @@ class Network:
                     # print("Y", self.Z[i][j])
                     net.add_edge(demander, provider, weight=float(self.Z[i][j]))
         for sector in Sectors.sectorsList:
-            sector.demandsFrom = list(net.successors(sector.name))
-            sector.providesTo = list(net.predecessors(sector.name))
+            print(sector.name)
+            if sector.name in list(net.nodes):
+                sector.demandsFrom = list(net.successors(sector.name))
+                sector.providesTo = list(net.predecessors(sector.name))
 
         for edge in net.edges:
             newEdge = Edges(edge, net[edge[0]][edge[1]]["weight"])

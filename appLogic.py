@@ -181,7 +181,7 @@ def produceCountriesAndSectors(file):
             if divided[0] not in countriesSectorsDict:
                 countriesSectorsDict[divided[0]] = []
     return countriesSectorsDict
-
+print(produceCountriesAndSectors( './Assets/I_2015.CSV'))
 
 def produceCountries(file):
     inDict = produceCountriesAndSectors(file)
