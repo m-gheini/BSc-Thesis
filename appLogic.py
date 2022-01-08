@@ -168,7 +168,11 @@ def produceCountriesAndSectors(file):
     allElements = allElements[0].split(",")
     # print(all)
     for elem in allElements[1:]:
-        elem = elem[1:-1]
+        if elem[0] == "\"":
+            elem = elem[1:]
+        if elem[-1] == "\"":
+            elem = elem[:-1]
+        print(elem)
         divided = elem.split("_")
         if len(divided) == 2:
             if divided[1] == "HFCE":
@@ -181,7 +185,6 @@ def produceCountriesAndSectors(file):
             if divided[0] not in countriesSectorsDict:
                 countriesSectorsDict[divided[0]] = []
     return countriesSectorsDict
-print(produceCountriesAndSectors( './Assets/I_2015.CSV'))
 
 def produceCountries(file):
     inDict = produceCountriesAndSectors(file)
