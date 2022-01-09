@@ -1,5 +1,6 @@
 import json
-
+from utility import writeShockLog
+SHK_LOG_PATH = './Assets/shockLog.CSV'
 
 class Shock:
     shocksList = list()
@@ -41,6 +42,7 @@ class ShockManager:
             shockNewAmount = float(shock.amount) * self.network.A[originIndex][targetIndex]
             # print("shock Amount::",float(shock.amount),"/A::",self.network.A[targetIndex][originIndex])
             if (abs(shockNewAmount) >= self.threshold) or (self.threshold == -1):
+                writeShockLog(SHK_LOG_PATH, [shock.origin, shock.target, shock.amount, shockNewAmount, shock.iteration])
                 if not shock.target in self.processQueue[shock.iteration]:
                     self.processQueue[shock.iteration][shock.target] = shockNewAmount
                 else:
@@ -57,7 +59,7 @@ class ShockManager:
         # print("processShocks...")
         while self.currentIteration < self.maxIteration:
             # logger.
-            self.print()
+            # self.print()
             for lastTarget in self.processQueue[self.currentIteration]:
                 origin = lastTarget
                 # print("LAST::",lastTarget, "IS::" ,self.network.getDemandsFrom(lastTarget))

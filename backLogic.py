@@ -6,6 +6,8 @@ from network import Sectors
 from network import Edges
 from shocks import Shock
 from shocks import ShockManager
+from utility import createShockLog
+SHK_LOG_PATH = './Assets/shockLog.CSV'
 
 info = {'inputFile': './Assets/I_2015.CSV', 'outputName': 'res', 'outputPath': 'C:/', 'imCountry': 'L',
         'imSector': '0', 'exCountry': 'K', 'exSector': '0', 'shockSrc': 'importer', 'shockSign': '+',
@@ -128,9 +130,11 @@ def main(data):
     # ShockManager(network, thr, itr)
     # for s in Shock.shocksList:
     #     print(s)
-    firstShock = Shock("CHN_26", "USA_26", "100", "-", 1)
+    firstShock = Shock("CHN_26", "USA_26", '8947.41384', "-", 1)
     # secondShock = Shock("L_0", "M_0", "1000", "+", 1)
-    shockManager = ShockManager(network, thr, 10)
+    shockManager = ShockManager(network, 0.0001, 10)
+    createShockLog(SHK_LOG_PATH, ['Origin', 'Target', 'Last-Amount', 'New-Amount', 'Iteration'])
+    print("LOG CREATED!!!!!")
     shockManager.addShock(firstShock)
     # shockManager.addShock(secondShock)
     shockManager.applyShocks()
