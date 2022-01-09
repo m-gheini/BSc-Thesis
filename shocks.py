@@ -1,6 +1,8 @@
 import json
 from utility import writeShockLog
+
 SHK_LOG_PATH = './Assets/shockLog.CSV'
+
 
 class Shock:
     shocksList = list()
@@ -8,8 +10,8 @@ class Shock:
     def __init__(self, origin, target, amount, sign, iteration):
         self.origin = origin
         self.target = target
-        self.amount = amount
         self.sign = sign
+        self.amount = +1 * float(amount) if self.sign == '+' else -1 * float(amount)
         self.iteration = iteration
         Shock.shocksList.append(self)
 
@@ -23,7 +25,7 @@ class ShockManager:
         self.network = network
         self.threshold = threshold
         self.maxIteration = maxIteration
-        self.currentIteration = 1
+        self.currentIteration = 0
         self.shockQueue = []
         self.processQueue = dict()
 

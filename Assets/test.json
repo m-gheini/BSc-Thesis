@@ -1,0 +1,19 @@
+{
+        "inputFile": "./Assets/I_2015.CSV",
+        "outputName": "res",
+        "outputPath": "C:/",
+        "imCountry": "USA",
+        "imSector": "26",
+        "exCountry": "CHN",
+        "exSector": "26",
+        "shockSrc": "exporter",
+        "shockSign": "+",
+        "shockAmount": "100",
+        "shockTo": "intermediate goods",
+        "shockItr": "10",
+        "shockThr": "0.0001",
+        "imScenario": "option 1",
+        "exScenario": "option 4",
+        "imAlter": "NONE",
+        "exAlter": "EST_19 : 100"
+}

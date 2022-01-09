@@ -1,5 +1,6 @@
 import os
 import pandas as pd
+import json
 import networkx as nx
 from network import Network
 from network import Sectors
@@ -7,15 +8,14 @@ from network import Edges
 from shocks import Shock
 from shocks import ShockManager
 from utility import createShockLog
+
 SHK_LOG_PATH = './Assets/shockLog.CSV'
+TEST_FILE = './Assets/test.json'
 
-info = {'inputFile': './Assets/I_2015.CSV', 'outputName': 'res', 'outputPath': 'C:/', 'imCountry': 'L',
-        'imSector': '0', 'exCountry': 'K', 'exSector': '0', 'shockSrc': 'importer', 'shockSign': '+',
-        'shockAmount': '20', 'shockTo': 'intermediate goods', 'shockItr': '11', 'shockThr': 'NOT CHOSEN',
-        'imScenario': 'option 1', 'exScenario': 'option 4', 'imAlter': 'NONE', 'exAlter': 'EST_19 : 100'}
+info = json.load(open(TEST_FILE))
 
 
-#infoDict = {}
+# infoDict = {}
 
 def readData(inFile):
     inDataframe = pd.read_csv(inFile, header=None, sep=',', engine='python')
@@ -45,6 +45,7 @@ def getRowNumOfFirstTax(dataframe):
             return i
     return i
 
+
 def getColNumOfFinalDemand(dataframe):
     c = getFirstRow(dataframe)
     j = -1
@@ -54,7 +55,7 @@ def getColNumOfFinalDemand(dataframe):
             continue
         if column.split('_')[1] == 'HFCE':
             return j
-    return j+1
+    return j + 1
 
 
 def getZ(dataframe):
@@ -91,10 +92,11 @@ def makeShockObject(origin, destination, amount, sign, iteration):
 
 
 def main(data):
-    origin = destination = ""
+    origin = target = ""
     itr = thr = -1
     infoDict = data
     print("IN BACK")
+    print(infoDict["inputFile"])
     df = readData(infoDict["inputFile"])
     Z = getZ(df)
     print(Z)
@@ -116,23 +118,26 @@ def main(data):
     # for e in Edges.edgesList:
     #     print(e)
 
-    # if infoDict["shockSrc"] == "importer":
-    #     origin = prepareName(infoDict["imCountry"], infoDict["imSector"])
-    #     destination = prepareName(infoDict["exCountry"], infoDict["exSector"])
-    # elif infoDict["shockSrc"] == "exporter":
-    #     origin = prepareName(infoDict["exCountry"], infoDict["exSector"])
-    #     destination = prepareName(infoDict["imCountry"], infoDict["imSector"])
-    # makeShockObject(origin, destination, infoDict["shockAmount"], infoDict["shockSign"], 1)
-    # if infoDict["shockItr"] == "NOT CHOSEN":
-    #     thr = int(infoDict["shockThr"])
-    # elif infoDict["shockThr"] == "NOT CHOSEN":
-    #     itr = int(infoDict["shockItr"])
-    # ShockManager(network, thr, itr)
-    # for s in Shock.shocksList:
-    #     print(s)
-    firstShock = Shock("CHN_26", "USA_26", '8947.41384', "-", 1)
+    if infoDict["shockSrc"] == "importer":
+        origin = prepareName(infoDict["imCountry"], infoDict["imSector"])
+        target = prepareName(infoDict["exCountry"], infoDict["exSector"])
+    elif infoDict["shockSrc"] == "exporter":
+        origin = prepareName(infoDict["exCountry"], infoDict["exSector"])
+        target = prepareName(infoDict["imCountry"], infoDict["imSector"])
+    srcIndex = network.getIndex(origin)
+    dstIndex = network.getIndex(target)
+    firstShock = Shock(origin, target, 0.01 * float(infoDict["shockAmount"]) * network.Z[dstIndex][srcIndex],
+                       infoDict["shockSign"], 0)
+    if infoDict["shockItr"] == "NOT CHOSEN":
+        thr = float(infoDict["shockThr"])
+    elif infoDict["shockThr"] == "NOT CHOSEN":
+        itr = int(infoDict["shockItr"])
+    else:
+        thr = float(infoDict["shockThr"])
+        itr = int(infoDict["shockItr"])
+    ShockManager(network, thr, itr)
     # secondShock = Shock("L_0", "M_0", "1000", "+", 1)
-    shockManager = ShockManager(network, 0.0001, 10)
+    shockManager = ShockManager(network, thr, itr)
     createShockLog(SHK_LOG_PATH, ['Origin', 'Target', 'Last-Amount', 'New-Amount', 'Iteration'])
     print("LOG CREATED!!!!!")
     shockManager.addShock(firstShock)
