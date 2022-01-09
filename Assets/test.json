@@ -7,7 +7,7 @@
         "exCountry": "CHN",
         "exSector": "26",
         "shockSrc": "exporter",
-        "shockSign": "+",
+        "shockSign": "-",
         "shockAmount": "100",
         "shockTo": "intermediate goods",
         "shockItr": "10",
