@@ -44,11 +44,14 @@ class ShockManager:
             shockNewAmount = float(shock.amount) * self.network.A[originIndex][targetIndex]
             # print("shock Amount::",float(shock.amount),"/A::",self.network.A[targetIndex][originIndex])
             if (abs(shockNewAmount) >= self.threshold) or (self.threshold == -1):
-                writeShockLog(SHK_LOG_PATH, [shock.origin, shock.target, shock.amount, shockNewAmount, shock.iteration])
-                if not shock.target in self.processQueue[shock.iteration]:
-                    self.processQueue[shock.iteration][shock.target] = shockNewAmount
+                writeShockLog(SHK_LOG_PATH,
+                              [shock.origin, shock.target, shock.amount, self.network.A[originIndex][targetIndex],
+                               shockNewAmount, shock.iteration])
+                if shock.target not in self.processQueue[shock.iteration]:
+                    self.processQueue[shock.iteration][shock.target] = [shockNewAmount, [shock.origin]]
                 else:
-                    self.processQueue[shock.iteration][shock.target] += shockNewAmount
+                    self.processQueue[shock.iteration][shock.target][0] += shockNewAmount
+                    self.processQueue[shock.iteration][shock.target][1].append(shock.origin)
         # print(self.processQueue)
 
     def applyShocks(self):
@@ -59,19 +62,21 @@ class ShockManager:
 
     def processShocks(self):
         # print("processShocks...")
-        while self.currentIteration < self.maxIteration:
+        while (self.currentIteration < self.maxIteration) and (self.currentIteration in self.processQueue):
+            print("CURRENT_ITR :: ", self.currentIteration)
             # logger.
             # self.print()
             for lastTarget in self.processQueue[self.currentIteration]:
                 origin = lastTarget
                 # print("LAST::",lastTarget, "IS::" ,self.network.getDemandsFrom(lastTarget))
                 targets = self.network.getDemandsFrom(lastTarget)
-                val = self.processQueue[self.currentIteration][lastTarget]
+                val = self.processQueue[self.currentIteration][lastTarget][0]
                 sign = "+"
                 iteration = self.currentIteration + 1
                 for target in targets:
-                    newShock = Shock(origin, target, val, sign, iteration)
-                    self.addShock(newShock)
+                    if target not in self.processQueue[self.currentIteration][lastTarget][1]:
+                        newShock = Shock(origin, target, val, sign, iteration)
+                        self.addShock(newShock)
             self.applyShocks()
             self.currentIteration += 1
 

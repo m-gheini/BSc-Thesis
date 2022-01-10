@@ -1,3 +1,4 @@
+import math
 import os
 import pandas as pd
 import json
@@ -93,7 +94,8 @@ def makeShockObject(origin, destination, amount, sign, iteration):
 
 def main(data):
     origin = target = ""
-    itr = thr = -1
+    itr = math.inf
+    thr = -1
     infoDict = data
     print("IN BACK")
     print(infoDict["inputFile"])
@@ -138,7 +140,7 @@ def main(data):
     ShockManager(network, thr, itr)
     # secondShock = Shock("L_0", "M_0", "1000", "+", 1)
     shockManager = ShockManager(network, thr, itr)
-    createShockLog(SHK_LOG_PATH, ['Origin', 'Target', 'Last-Amount', 'New-Amount', 'Iteration'])
+    createShockLog(SHK_LOG_PATH, ['Origin', 'Target', 'Last-Amount', 'Coefficient', 'New-Amount', 'Iteration'])
     print("LOG CREATED!!!!!")
     shockManager.addShock(firstShock)
     # shockManager.addShock(secondShock)
