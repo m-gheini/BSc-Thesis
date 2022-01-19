@@ -1,4 +1,5 @@
 import os
+import json
 import backLogic as func
 
 countriesSectorsDict = {}
@@ -12,11 +13,17 @@ equivalentInApp = {"inputFile": "input-output table", "outputName": "Result File
                    "imAlter": "Alternative List For Importer", "exAlter": "Alternative List For Exporter"}
 
 userInputDict = {"inputFile": "", "outputName": "", "outputPath": "", "imCountry": "", "imSector": "", "exCountry": "",
-                 "exSector": "", "shockSrc": "", "shockSign": "", "shockAmount": "", "shockTo": "", "shockItr": "",
-                 "shockThr": "", "imScenario": "", "exScenario": "", "imAlter": "", "exAlter": ""}
+                 "exSector": "", "shockSrc": "", "shockSign": "", "shockAmount": "", "shockTo": "",
+                 "shockStopAttribute": "", "shockItr": "", "shockThr": "", "imScenario": "", "exScenario": "",
+                 "imAlter": "", "exAlter": ""}
 
 imAlternatives = {}
 exAlternatives = {}
+
+
+def getConfigData(Path):
+    configData = json.load(open(Path))
+    return configData
 
 
 def getInput(file):
@@ -61,6 +68,10 @@ def getShockAmount(amount):
 
 def getShockTo(attr):
     userInputDict["shockTo"] = attr
+
+
+def getShockStopAttribute(attr):
+    userInputDict["shockStopAttribute"] = attr
 
 
 def getShockIteration(itr):
@@ -185,6 +196,7 @@ def produceCountriesAndSectors(file):
             if divided[0] not in countriesSectorsDict:
                 countriesSectorsDict[divided[0]] = []
     return countriesSectorsDict
+
 
 def produceCountries(file):
     inDict = produceCountriesAndSectors(file)

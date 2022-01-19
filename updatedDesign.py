@@ -3,6 +3,14 @@
 import PySimpleGUI as sg
 import appLogic as func
 
+configToElements = {"inputFile": "-MESSAGE-", "outputName": "-OUT NAME-", "outputPath": "-OUT PATH-",
+                    "imCountry": "-IM COUNTRIES-", "imSector": "-IM SECTORS-", "exCountry": "-EX COUNTRIES-",
+                    "exSector": "-EX SECTORS-", "shockAmount": "-SHK AMOUNT-"}
+
+enableAfterUpload = ["-SRC SHK IM-", "-SRC SHK EX-", "-SHK SGN POS-", "-SHK SGN NEG-", "-SHK AMOUNT-", "-SHK TO IG-",
+                     "-SHK TO FD-", "-SHK STP ITR-", "-SHK STP THR-", "-SCN IM OP1-", "-SCN IM OP2-", "-SCN IM OP3-",
+                     "-SCN IM OP4-", "-SCN EX OP1-", "-SCN EX OP2-", "-SCN EX OP3-", "-SCN EX OP4-"]
+
 HEADER_FONT = ("Arial Rounded MT Bold", 25)
 BUTTON_FONT = ("Franklin Gothic Book", 10)
 FRAME_NAME_FONT = ("Arial Rounded MT Bold", 11)
@@ -231,7 +239,8 @@ def makeWindow(theme):
                          pad=((350, 350), (0, 0)), button_color="green", border_width=3, enable_events=True)]]
 
     scrollableLayout = [[sg.Column(layout, expand_x=True, expand_y=True, scrollable=True, vertical_scroll_only=True)]]
-    return sg.Window('Shock Diffusion Tool', scrollableLayout, resizable=True, auto_size_buttons=False)
+    return sg.Window('Shock Diffusion Tool', scrollableLayout, resizable=True, auto_size_buttons=False,
+                     enable_close_attempted_event=True)
 
 
 # def findFileName(path):
@@ -263,23 +272,77 @@ def changeLayoutAfterUpload(window, DATA):
     window["-IM COUNTRIES-"].update(disabled=False, values=updatedCountries)
     window["-EX SECTORS-"].update(disabled=False, values=updatedSectors)
     window["-IM SECTORS-"].update(disabled=False, values=updatedSectors)
-    window["-SRC SHK IM-"].update(disabled=False)
-    window["-SRC SHK EX-"].update(disabled=False)
-    window["-SHK SGN POS-"].update(disabled=False)
-    window["-SHK SGN NEG-"].update(disabled=False)
-    window["-SHK AMOUNT-"].update(disabled=False)
-    window["-SHK TO IG-"].update(disabled=False)
-    window["-SHK TO FD-"].update(disabled=False)
-    window["-SHK STP ITR-"].update(disabled=False)
-    window["-SHK STP THR-"].update(disabled=False)
-    window["-SCN IM OP1-"].update(disabled=False)
-    window["-SCN IM OP2-"].update(disabled=False)
-    window["-SCN IM OP3-"].update(disabled=False)
-    window["-SCN IM OP4-"].update(disabled=False)
-    window["-SCN EX OP1-"].update(disabled=False)
-    window["-SCN EX OP2-"].update(disabled=False)
-    window["-SCN EX OP3-"].update(disabled=False)
-    window["-SCN EX OP4-"].update(disabled=False)
+    for element in enableAfterUpload:
+        window[element].update(disabled=False)
+
+
+def changeLayoutUsingSavedConfig(window, configData):
+    window["-UPLOAD ICON-"].update(visible=False)
+    window["-CHOOSE-"].update(visible=False)
+    window["-DEFAULT-"].update(visible=False)
+    window["-MESSAGE-"].update(visible=True)
+    updatedCountries = func.produceCountries(configData["inputFile"])
+    updatedSectors = func.produceSectors(configData["inputFile"])
+    window["-EX COUNTRIES-"].update(disabled=False, values=updatedCountries)
+    window["-IM COUNTRIES-"].update(disabled=False, values=updatedCountries)
+    window["-EX SECTORS-"].update(disabled=False, values=updatedSectors)
+    window["-IM SECTORS-"].update(disabled=False, values=updatedSectors)
+    for element in enableAfterUpload:
+        window[element].update(disabled=False)
+    for key in configToElements:  # update window with the values read from settings file
+        window[configToElements[key]].update(value=configData[key])
+    if "shockSrc" in configData:
+        if configData["shockSrc"] == "importer":
+            window["-SRC SHK IM-"].update(value=True)
+        else:
+            window["-SRC SHK EX-"].update(value=True)
+    if "shockSign" in configData:
+        if configData["shockSign"] == "+":
+            window["-SHK SGN POS-"].update(value=True)
+        else:
+            window["-SHK SGN NEG-"].update(value=True)
+    if "shockTo" in configData:
+        if configData["shockTo"] == "intermediate goods":
+            window["-SHK TO IG-"].update(value=True)
+        else:
+            window["-SHK TO FD-"].update(value=True)
+    if "shockStopAttribute" in configData:
+        if configData["shockStopAttribute"] == "iteration":
+            window["-SHK STP ITR-"].update(value=True)
+            window["-SHK THR-"].update(visible=False, disabled=True)
+            window["-SHK ITR-"].update(visible=True, disabled=False)
+            if "shockItr" in configData:
+                window["-SHK ITR-"].update(value=configData["shockItr"])
+        else:
+            window["-SHK STP THR-"].update(value=True)
+            window["-SHK ITR-"].update(visible=False, disabled=True)
+            window["-SHK THR-"].update(visible=True, disabled=False)
+            if "shockThr" in configData:
+                window["-SHK THR-"].update(value=configData["shockThr"])
+    if "imScenario" in configData:
+        if configData["imScenario"] == "option 1":
+            window["-SCN IM OP1-"].update(value=True)
+        elif configData["imScenario"] == "option 2":
+            window["-SCN IM OP2-"].update(value=True)
+        elif configData["imScenario"] == "option 3":
+            window["-SCN IM OP3-"].update(value=True)
+        else:
+            if "imAlter" in configData:
+                window["-SCN IM OP4-"].update(value=True)
+                window["-IM ALTER-"].update(configData["imAlter"])
+                window["-IM ALTER-"].update(disabled=False, visible=True)
+    if "exScenario" in configData:
+        if configData["exScenario"] == "option 1":
+            window["-SCN EX OP1-"].update(value=True)
+        elif configData["exScenario"] == "option 2":
+            window["-SCN EX OP2-"].update(value=True)
+        elif configData["exScenario"] == "option 3":
+            window["-SCN EX OP3-"].update(value=True)
+        else:
+            if "exAlter" in configData:
+                window["-SCN EX OP4-"].update(value=True)
+                window["-EX ALTER-"].update(configData["exAlter"])
+                window["-EX ALTER-"].update(disabled=False, visible=True)
 
 
 def optionFourLayout(DATA):
@@ -362,14 +425,18 @@ def main():
         # print("DATA::", DATA)
         event, values = window.read()
         print(event)
-        if event in (None, 'Exit'):
-            break
+        if event == sg.WINDOW_CLOSE_ATTEMPTED_EVENT:
+            toSave = sg.popup_yes_no('Do you want to save current project?')
+            if toSave == 'No':
+                break
+            # elif toSave == 'Yes':
+            #     filename = sg.popup_get_file('Choose file to save to', save_as=True)
 
         if event == "-FILE-":
             DATA = values["-FILE-"]
             if DATA != '':
-                func.getInput(DATA)
-                changeLayoutAfterUpload(window, DATA)
+                configData = func.getConfigData(DATA)
+                changeLayoutUsingSavedConfig(window, configData)
 
         elif event == "-DEFAULT-":
             DATA = "./Assets/I_2015.CSV"
@@ -429,9 +496,11 @@ def main():
 
         elif event == "-SHK STP ITR-" or event == "-SHK STP THR-":
             if values["-SHK STP ITR-"]:
+                func.getShockStopAttribute("iteration")
                 window["-SHK THR-"].update(visible=False, disabled=True)
                 window["-SHK ITR-"].update(visible=True, disabled=False)
             elif values["-SHK STP THR-"]:
+                func.getShockStopAttribute("threshold")
                 window["-SHK ITR-"].update(visible=False, disabled=True)
                 window["-SHK THR-"].update(visible=True, disabled=False)
 
@@ -497,6 +566,7 @@ def main():
             sg.popup(func.getStartMessage())
 
     func.welcome()
+    print("CLOSE!!")
     window.close()
     exit(0)
 

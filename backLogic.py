@@ -149,4 +149,4 @@ def main(data):
     shockManager.print()
 
 
-main(info)
+# main(info)
