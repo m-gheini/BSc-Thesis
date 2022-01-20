@@ -440,8 +440,11 @@ def main():
             toSave = sg.popup_yes_no('Do you want to save current project?')
             if toSave == 'No':
                 break
-            # elif toSave == 'Yes':
-            #     filename = sg.popup_get_file('Choose file to save to', save_as=True)
+            elif toSave == 'Yes':
+                filename = sg.popup_get_file('Choose file name(without file extension) and location', save_as=True,
+                                             default_extension="sdt")
+                func.saveConfigFile(filename)
+                break
 
         if event == "-FILE-":
             DATA = values["-FILE-"]

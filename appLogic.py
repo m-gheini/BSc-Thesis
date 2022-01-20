@@ -31,6 +31,13 @@ def getUserInputDictFromSaved(configData):
         userInputDict[key] = configData[key]
 
 
+def saveConfigFile(path):
+    print(path)
+    out_file = open(path, "w")
+    json.dump(userInputDict, out_file, indent=6)
+    out_file.close()
+
+
 def getInput(file):
     userInputDict["inputFile"] = file
 
