@@ -50,12 +50,19 @@ def createUploadPlacement():
 
     uploadButton = sg.FileBrowse("Upload New Data", font=BUTTON_FONT,
                                  file_types=(("CSV Files", "*.csv"), ("excel Files", "*.xlsx")), initial_folder="C:\\",
-                                 key="-CHOOSE-", size=(14, 1))
+                                 key="-CHOOSE-", size=(13, 1))
 
-    defaultFileButton = sg.Button("Use Default Data", font=BUTTON_FONT, key="-DEFAULT-", size=(14, 1))
+    defaultFileButton = sg.Button("Use Default Data", font=BUTTON_FONT, key="-DEFAULT-", size=(13, 1))
+
+    savedFileNamePlacement = sg.In(size=(30, 10), enable_events=True, key="-SAVED FILE-", visible=False)
+
+    savedConfigButton = sg.FileBrowse("Use Saved Project", font=BUTTON_FONT,
+                                      file_types=("JSON Files", "*.json"), initial_folder="C:\\",
+                                      key="-SAVED CONFIG-", size=(13, 1))
 
     uploadFrameContentLayout = [[uploadProgress, percent, completeMessage], uploadIcon,
-                                [fileNamePlacement, uploadButton, defaultFileButton]]
+                                [fileNamePlacement, uploadButton, defaultFileButton, savedFileNamePlacement,
+                                 savedConfigButton]]
 
     uploadFrameContent = [
         sg.Column(uploadFrameContentLayout, size=(365, 110), element_justification='c', justification='center')]
@@ -122,7 +129,7 @@ def createShockAttrPlacement():
         [[sg.Text('Source Of Shock:'),
           sg.Radio("Importer", "RadioDemo", disabled=True, key="-SRC SHK IM-", enable_events=True),
           sg.Radio("Exporter", "RadioDemo", disabled=True, key="-SRC SHK EX-", enable_events=True)]], expand_x=True)
-    space = sg.Column([], size=(90, 1), expand_x=True)
+    space = sg.Column([], size=(0, 1), expand_x=True)
 
     shockAmountPlacement = sg.Column([[sg.Text("Shock Amount:"),
                                        sg.Radio("+", "RadioDemo1", font='bold', disabled=True, key="-SHK SGN POS-",
@@ -257,6 +264,7 @@ def changeLayoutAfterUpload(window, DATA):
     window["-UPLOAD ICON-"].update(visible=False)
     window["-CHOOSE-"].update(visible=False)
     window["-DEFAULT-"].update(visible=False)
+    window["-SAVED CONFIG-"].update(visible=False)
     window['-PROGRESS BAR-'].update(visible=True, current_count=0)
     window['-PERCENT-'].update(visible=True)
     for i in range(1000):
@@ -276,11 +284,14 @@ def changeLayoutAfterUpload(window, DATA):
         window[element].update(disabled=False)
 
 
-def changeLayoutUsingSavedConfig(window, configData):
+def changeLayoutUsingSavedConfig(window, DATA, configData):
+    func.getUserInputDictFromSaved(configData)
     window["-UPLOAD ICON-"].update(visible=False)
     window["-CHOOSE-"].update(visible=False)
     window["-DEFAULT-"].update(visible=False)
+    window["-SAVED CONFIG-"].update(visible=False)
     window["-MESSAGE-"].update(visible=True)
+    window["-MESSAGE-"].update(DATA)
     updatedCountries = func.produceCountries(configData["inputFile"])
     updatedSectors = func.produceSectors(configData["inputFile"])
     window["-EX COUNTRIES-"].update(disabled=False, values=updatedCountries)
@@ -435,13 +446,19 @@ def main():
         if event == "-FILE-":
             DATA = values["-FILE-"]
             if DATA != '':
-                configData = func.getConfigData(DATA)
-                changeLayoutUsingSavedConfig(window, configData)
+                func.getInput(DATA)
+                changeLayoutAfterUpload(window, DATA)
 
         elif event == "-DEFAULT-":
             DATA = "./Assets/I_2015.CSV"
             func.getInput(DATA)
             changeLayoutAfterUpload(window, DATA)
+
+        elif event == "-SAVED FILE-":
+            DATA = values["-SAVED FILE-"]
+            if DATA != '':
+                configData = func.getConfigData(DATA)
+                changeLayoutUsingSavedConfig(window, DATA, configData)
 
         elif event == "-OUT NAME-":
             print("-OUT NAME-")

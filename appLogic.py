@@ -26,6 +26,11 @@ def getConfigData(Path):
     return configData
 
 
+def getUserInputDictFromSaved(configData):
+    for key in configData:
+        userInputDict[key] = configData[key]
+
+
 def getInput(file):
     userInputDict["inputFile"] = file
 
