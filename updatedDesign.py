@@ -2,6 +2,7 @@
 
 import PySimpleGUI as sg
 import appLogic as func
+import threading
 
 configToElements = {"inputFile": "-MESSAGE-", "outputName": "-OUT NAME-", "outputPath": "-OUT PATH-",
                     "imCountry": "-IM COUNTRIES-", "imSector": "-IM SECTORS-", "exCountry": "-EX COUNTRIES-",
@@ -13,6 +14,7 @@ enableAfterUpload = ["-SRC SHK IM-", "-SRC SHK EX-", "-SHK SGN POS-", "-SHK SGN 
 
 HEADER_FONT = ("Arial Rounded MT Bold", 25)
 BUTTON_FONT = ("Franklin Gothic Book", 10)
+PROCESS_INFO_TEXT_FONT = ("Arial Rounded MT Bold", 16)
 FRAME_NAME_FONT = ("Arial Rounded MT Bold", 11)
 SUB_FRAME_FONT = ("Arial Rounded MT Bold", 9)
 IM_SE_OP1 = "Based on the change of imports, production WOULD CHANGE; therefore, exports would change."
@@ -422,6 +424,46 @@ def getDataFromAlterWin(tradeType, event, values):
         func.getAlternatives(tradeType, "4", "Percent", values['-PERCENT4-'])
 
 
+def getProcessWindowLayout(iterationCnt):
+    # process = [sg.Image(data=sg.DEFAULT_BASE64_LOADING_GIF, enable_events=True, key='-GIF-IMAGE-')]
+    process = [sg.ProgressBar(int(func.getItrCnt()), orientation='h', size=(200, 20), key="-PROGRESS BAR-", visible=True)]
+    Info = [sg.Text("Bulding Network...", size=(50, 1), key='-PROCESS PROGRESS-', visible=True, justification='center',
+                    font=PROCESS_INFO_TEXT_FONT)]
+    layout = [process, Info]
+    return [sg.Column(layout)]
+
+
+def updateGif(window, i):
+    # Update progress bar input:i
+    window['-PROGRESS BAR-'].UpdateBar((i + 1))
+    window['-PROCESS PROGRESS-'].update(value=f'{((i + 1) / int(func.getItrCnt()))*100:.1f}%')
+    print("IN UPDATE GIF")
+    # window['-GIF-IMAGE-'].update_animation(sg.DEFAULT_BASE64_LOADING_GIF, time_between_frames=100)
+
+
+def openProcessWindow():
+    window3 = sg.Window('Process Information', [getProcessWindowLayout(3)],
+                        return_keyboard_events=True, size=(400, 150))
+    # t1 = threading.Thread(target=updateGif, args=window3)
+    # t2 = threading.Thread(target=func.startProcessing())
+    # t1.setDaemon(True)
+    # t2.setDaemon(True)
+    # t1.start()
+    # t2.start()
+    # t2.join()
+    # t1.join()
+    while True:
+        event3, values3 = window3.read(timeout=100)
+        print("t1, t2")
+        # updateGif(window3)
+        func.startProcessing(window3)
+        window3.close()
+        break
+        # if event3 == sg.WIN_CLOSED:
+        #     window3.close()
+        #     break
+
+
 def main():
     global DATA
     window = makeWindow(sg.theme())
@@ -543,7 +585,7 @@ def main():
                 func.getImScenario("option 3")
             elif values["-SCN IM OP4-"]:
                 func.getImScenario("option 4")
-                window2 = sg.Window('My new window', optionFourLayout(DATA), location=(800, 625),
+                window2 = sg.Window('Alternatives', optionFourLayout(DATA), location=(800, 625),
                                     return_keyboard_events=True)
                 while True:
                     event2, values2 = window2.read()
@@ -567,7 +609,7 @@ def main():
                 func.getExScenario("option 3")
             elif values["-SCN EX OP4-"]:
                 func.getExScenario("option 4")
-                window2 = sg.Window('My new window', optionFourLayout(DATA), location=(800, 625),
+                window2 = sg.Window('Alternatives', optionFourLayout(DATA), location=(800, 625),
                                     return_keyboard_events=True)
                 while True:
                     event2, values2 = window2.read()
@@ -583,7 +625,13 @@ def main():
             func.getExAlternatives(exAltr)
 
         elif event == "-START-":
-            sg.popup(func.getStartMessage())
+            valid = func.checkAllInfo()
+            if not valid:
+                sg.popup(func.getWarningMessage())
+            else:
+                openProcessWindow()
+                sg.popup("Diffusing Shock and Log Of Shocks Saved!")
+            # sg.popup(func.getStartMessage())
 
     func.welcome()
     print("CLOSE!!")

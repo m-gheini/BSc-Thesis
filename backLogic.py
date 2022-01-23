@@ -92,7 +92,7 @@ def makeShockObject(origin, destination, amount, sign, iteration):
     return shock
 
 
-def main(data):
+def main(data, window):
     origin = target = ""
     itr = math.inf
     thr = -1
@@ -145,7 +145,7 @@ def main(data):
     shockManager.addShock(firstShock)
     # shockManager.addShock(secondShock)
     shockManager.applyShocks()
-    shockManager.processShocks()
+    shockManager.processShocks(window)
     shockManager.print()
 
 

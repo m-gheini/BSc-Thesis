@@ -8,7 +8,7 @@ equivalentInApp = {"inputFile": "input-output table", "outputName": "Result File
                    "outputPath": "Path To Save Result", "imCountry": "Importer Country", "imSector": "Importer Sector",
                    "exCountry": "Exporter Country", "exSector": "Exporter Sector", "shockSrc": "Source Of Shock",
                    "shockSign": "Sign Of Shock Value", "shockAmount": "Shock Amount",
-                   "shockTo": "Shock To", "shockItr": "Iteration",
+                   "shockTo": "Shock To","shockStopAttribute": "Stop At", "shockItr": "Iteration",
                    "shockThr": "Threshold", "imScenario": "Importer Scenario", "exScenario": "Exporter Scenario",
                    "imAlter": "Alternative List For Importer", "exAlter": "Alternative List For Exporter"}
 
@@ -159,15 +159,24 @@ def checkUserInput(dict):
     return emptyParameters
 
 
-def getStartMessage():
+def getWarningMessage():
     empties = checkUserInput(userInputDict)
     message = "Attention!!\n\n"
-    if not empties:
-        func.main(userInputDict)
-        return "Successful"
     for name in empties:
         message += "\"" + equivalentInApp[name] + "\" is empty.\n\n"
     return message
+
+
+def checkAllInfo():
+    empties = checkUserInput(userInputDict)
+    if not empties:
+        return True
+    for name in empties:
+        return False
+
+
+def startProcessing(window):
+    func.main(userInputDict, window)
 
 
 def getResultFileAttr(name, path):
@@ -218,6 +227,10 @@ def produceCountries(file):
 def produceSectors(file):
     inDict = produceCountriesAndSectors(file)
     return list(inDict.values())[0]
+
+
+def getItrCnt():
+    return userInputDict["shockItr"]
 
 
 # def getImporter():
