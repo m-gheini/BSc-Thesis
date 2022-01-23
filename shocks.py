@@ -1,5 +1,6 @@
 import json
 from utility import writeShockLog
+import updatedDesign as design
 
 SHK_LOG_PATH = './Assets/shockLog.CSV'
 
@@ -60,10 +61,11 @@ class ShockManager:
             shock = self.shockQueue.pop()
             self.applyShock(shock)
 
-    def processShocks(self):
+    def processShocks(self, window):
         # print("processShocks...")
         while (self.currentIteration < self.maxIteration) and (self.currentIteration in self.processQueue):
             print("CURRENT_ITR :: ", self.currentIteration)
+            design.updateGif(window, self.currentIteration)
             # logger.
             # self.print()
             for lastTarget in self.processQueue[self.currentIteration]:
