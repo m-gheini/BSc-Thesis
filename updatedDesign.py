@@ -52,15 +52,15 @@ def createUploadPlacement():
 
     uploadButton = sg.FileBrowse("Upload New Data", font=BUTTON_FONT,
                                  file_types=(("CSV Files", "*.csv"), ("excel Files", "*.xlsx")), initial_folder="C:\\",
-                                 key="-CHOOSE-", size=(13, 1))
+                                 key="-CHOOSE-", size=(14, 1))
 
-    defaultFileButton = sg.Button("Use Default Data", font=BUTTON_FONT, key="-DEFAULT-", size=(13, 1))
+    defaultFileButton = sg.Button("Use Default Data", font=BUTTON_FONT, key="-DEFAULT-", size=(14, 1))
 
     savedFileNamePlacement = sg.In(size=(30, 10), enable_events=True, key="-SAVED FILE-", visible=False)
 
     savedConfigButton = sg.FileBrowse("Use Saved Project", font=BUTTON_FONT,
-                                      file_types=("JSON Files", "*.json"), initial_folder="C:\\",
-                                      key="-SAVED CONFIG-", size=(13, 1))
+                                      file_types=[("Json", '*.json')], initial_folder="C:\\",
+                                      key="-SAVED CONFIG-", size=(14, 1))
 
     uploadFrameContentLayout = [[uploadProgress, percent, completeMessage], uploadIcon,
                                 [fileNamePlacement, uploadButton, defaultFileButton, savedFileNamePlacement,
