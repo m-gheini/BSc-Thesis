@@ -8,7 +8,7 @@ equivalentInApp = {"inputFile": "input-output table", "outputName": "Result File
                    "outputPath": "Path To Save Result", "imCountry": "Importer Country", "imSector": "Importer Sector",
                    "exCountry": "Exporter Country", "exSector": "Exporter Sector", "shockSrc": "Source Of Shock",
                    "shockSign": "Sign Of Shock Value", "shockAmount": "Shock Amount",
-                   "shockTo": "Shock To","shockStopAttribute": "Stop At", "shockItr": "Iteration",
+                   "shockTo": "Shock To", "shockStopAttribute": "Stop At", "shockItr": "Iteration",
                    "shockThr": "Threshold", "imScenario": "Importer Scenario", "exScenario": "Exporter Scenario",
                    "imAlter": "Alternative List For Importer", "exAlter": "Alternative List For Exporter"}
 
@@ -176,7 +176,7 @@ def checkAllInfo():
 
 
 def startProcessing(window):
-    func.main(userInputDict, window)
+    func.main(userInputDict, window, countriesSectorsDict)
 
 
 def getResultFileAttr(name, path):
@@ -212,11 +212,16 @@ def produceCountriesAndSectors(file):
             if divided[0] not in countriesSectorsDict:
                 countriesSectorsDict[divided[0]] = [divided[1]]
             else:
-                countriesSectorsDict[divided[0]].append(divided[1])
+                if divided[1] not in countriesSectorsDict[divided[0]]:
+                    countriesSectorsDict[divided[0]].append(divided[1])
         elif len(divided) == 1:
             if divided[0] not in countriesSectorsDict:
                 countriesSectorsDict[divided[0]] = []
     return countriesSectorsDict
+
+
+def getSectorsForCountry(country):
+    return countriesSectorsDict[country]
 
 
 def produceCountries(file):
@@ -225,8 +230,11 @@ def produceCountries(file):
 
 
 def produceSectors(file):
+    res = ["ALL"]
     inDict = produceCountriesAndSectors(file)
-    return list(inDict.values())[0]
+    for sector in list(inDict.values())[0]:
+        res.append(sector)
+    return res
 
 
 def getItrCnt():

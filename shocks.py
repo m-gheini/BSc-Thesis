@@ -2,7 +2,7 @@ import json
 from utility import writeShockLog
 import updatedDesign as design
 
-SHK_LOG_PATH = './Assets/shockLog.CSV'
+# SHK_LOG_PATH = './Assets/shockLog.CSV'
 
 
 class Shock:
@@ -22,13 +22,14 @@ class Shock:
 
 
 class ShockManager:
-    def __init__(self, network, threshold, maxIteration):
+    def __init__(self, network, threshold, maxIteration, logPath):
         self.network = network
         self.threshold = threshold
         self.maxIteration = maxIteration
         self.currentIteration = 0
         self.shockQueue = []
         self.processQueue = dict()
+        self.logPath = logPath
 
     def addShock(self, shock):
         # print("addShock...")
@@ -45,9 +46,9 @@ class ShockManager:
             shockNewAmount = float(shock.amount) * self.network.A[originIndex][targetIndex]
             # print("shock Amount::",float(shock.amount),"/A::",self.network.A[targetIndex][originIndex])
             if (abs(shockNewAmount) >= self.threshold) or (self.threshold == -1):
-                writeShockLog(SHK_LOG_PATH,
-                              [shock.origin, shock.target, shock.amount, self.network.A[originIndex][targetIndex],
-                               shockNewAmount, shock.iteration])
+                writeShockLog(self.logPath,
+                              [shock.origin, shock.target, round(shock.amount, 4), self.network.A[originIndex][targetIndex],
+                               round(shockNewAmount, 4), shock.iteration])
                 if shock.target not in self.processQueue[shock.iteration]:
                     self.processQueue[shock.iteration][shock.target] = [shockNewAmount, [shock.origin]]
                 else:

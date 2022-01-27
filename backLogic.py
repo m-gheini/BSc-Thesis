@@ -9,6 +9,7 @@ from network import Edges
 from shocks import Shock
 from shocks import ShockManager
 from utility import createShockLog
+# from appLogic import getSectorsForCountry
 
 SHK_LOG_PATH = './Assets/shockLog.CSV'
 TEST_FILE = './Assets/test.json'
@@ -92,8 +93,9 @@ def makeShockObject(origin, destination, amount, sign, iteration):
     return shock
 
 
-def main(data, window):
-    origin = target = ""
+def main(data, window, sectorsForCountry):
+    origins = []
+    targets = []
     itr = math.inf
     thr = -1
     infoDict = data
@@ -121,15 +123,27 @@ def main(data, window):
     #     print(e)
 
     if infoDict["shockSrc"] == "importer":
-        origin = prepareName(infoDict["imCountry"], infoDict["imSector"])
-        target = prepareName(infoDict["exCountry"], infoDict["exSector"])
+        if infoDict["imSector"] == "ALL":
+            for sector in sectorsForCountry[infoDict["imCountry"]]:
+                origins.append(prepareName(infoDict["imCountry"], sector))
+        else:
+            origins.append(prepareName(infoDict["imCountry"], infoDict["imSector"]))
+        if infoDict["exSector"] == "ALL":
+            for sector in sectorsForCountry[infoDict["exCountry"]]:
+                targets.append(prepareName(infoDict["exCountry"], sector))
+        else:
+            targets.append(prepareName(infoDict["exCountry"], infoDict["exSector"]))
     elif infoDict["shockSrc"] == "exporter":
-        origin = prepareName(infoDict["exCountry"], infoDict["exSector"])
-        target = prepareName(infoDict["imCountry"], infoDict["imSector"])
-    srcIndex = network.getIndex(origin)
-    dstIndex = network.getIndex(target)
-    firstShock = Shock(origin, target, 0.01 * float(infoDict["shockAmount"]) * network.Z[dstIndex][srcIndex],
-                       infoDict["shockSign"], 0)
+        if infoDict["exSector"] == "ALL":
+            for sector in sectorsForCountry[infoDict["exCountry"]]:
+                origins.append(prepareName(infoDict["exCountry"], sector))
+        else:
+            origins.append(prepareName(infoDict["exCountry"], infoDict["exSector"]))
+        if infoDict["imSector"] == "ALL":
+            for sector in sectorsForCountry[infoDict["imCountry"]]:
+                targets.append(prepareName(infoDict["imCountry"], sector))
+        else:
+            targets.append(prepareName(infoDict["imCountry"], infoDict["imSector"]))
     if infoDict["shockItr"] == "NOT CHOSEN":
         thr = float(infoDict["shockThr"])
     elif infoDict["shockThr"] == "NOT CHOSEN":
@@ -137,12 +151,19 @@ def main(data, window):
     else:
         thr = float(infoDict["shockThr"])
         itr = int(infoDict["shockItr"])
-    ShockManager(network, thr, itr)
     # secondShock = Shock("L_0", "M_0", "1000", "+", 1)
-    shockManager = ShockManager(network, thr, itr)
-    createShockLog(SHK_LOG_PATH, ['Origin', 'Target', 'Last-Amount', 'Coefficient', 'New-Amount', 'Iteration'])
+    resultName = infoDict["outputName"] + '.CSV'
+    shockLogPath = os.path.join(infoDict["outputPath"], resultName)
+    shockManager = ShockManager(network, thr, itr, shockLogPath)
+    createShockLog(shockLogPath, ['Origin', 'Target', 'Origin_Shock', 'Coefficient', 'Target-Shock', 'Iteration'])
     print("LOG CREATED!!!!!")
-    shockManager.addShock(firstShock)
+    for origin in origins:
+        for target in targets:
+            srcIndex = network.getIndex(origin)
+            dstIndex = network.getIndex(target)
+            firstShock = Shock(origin, target, 0.01 * float(infoDict["shockAmount"]) * network.Z[dstIndex][srcIndex],
+                               infoDict["shockSign"], 0)
+            shockManager.addShock(firstShock)
     # shockManager.addShock(secondShock)
     shockManager.applyShocks()
     shockManager.processShocks(window)

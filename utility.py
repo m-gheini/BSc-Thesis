@@ -6,7 +6,7 @@ def getTechnicalCoefficients(Z, X):
 
 
 def createShockLog(path, header):
-    with open(path, 'w', encoding='UTF8') as f:
+    with open(path, 'w+', encoding='UTF8') as f:
         writer = csv.writer(f)
         writer.writerow(header)
 
