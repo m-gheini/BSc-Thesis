@@ -1,6 +1,6 @@
 # Shock Diffusion Tool
 
-Implementation of a tool which represents how a shock originating in a country/sector may diffuse among neighboring industries in trade networks. Based on different scenarios stated by the user, the propagation of shock and final network would be different. A demonstration of application and its functionality can be seen in : [https://github.com/m-gheini/BSc-Thesis/blob/master/Thesis.mp4]
+Implementation of a tool which represents how a shock originating in a country/sector may diffuse among neighboring industries in trade networks. Based on different scenarios stated by the user, the propagation of shock and final network would be different. A demonstration of application and its functionality can be seen [here](#https://github.com/m-gheini/BSc-Thesis/blob/master/Thesis.mp4)
 
 - [Shock Diffusion Tool](#shock-diffusion-tool)
   - [Logic behind shock diffusion](#logic-behind-shock-diffusion)
